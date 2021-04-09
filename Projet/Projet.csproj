@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net461</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="ascii_8x8.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="ascii_8x8.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="RLNET" Version="1.0.6" />
+    <PackageReference Include="RogueSharp" Version="4.2.0" />
+  </ItemGroup>
+
+</Project>

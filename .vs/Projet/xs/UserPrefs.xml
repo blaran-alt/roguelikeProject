@@ -1,0 +1,37 @@
+﻿<Properties StartupConfiguration="{6906CE51-FAB3-45F7-9CE5-13F340693DA3}|Default">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Projet/Items/Potion.cs">
+    <Files>
+      <File FileName="Projet/Game.cs" Line="1" Column="1" />
+      <File FileName="Projet/Systems/Inventory.cs" Line="1" Column="1" />
+      <File FileName="Projet/Behaviors/StandardMoveAndAttack.cs" Line="1" Column="1" />
+      <File FileName="Projet/Interfaces/IActor.cs" Line="19" Column="1" />
+      <File FileName="Projet/Interfaces/IItem.cs" Line="1" Column="1" />
+      <File FileName="Projet/Items/Potion.cs" Line="1" Column="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="Projet" expanded="True">
+            <Node name="Projet" expanded="True">
+              <Node name="Behaviors" expanded="True" />
+              <Node name="Core" expanded="True" />
+              <Node name="Interfaces" expanded="True" />
+              <Node name="Items" expanded="True">
+                <Node name="Potion.cs" selected="True" />
+              </Node>
+              <Node name="Monsters" expanded="True" />
+              <Node name="Systems" expanded="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.ItemProperties.Projet PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>

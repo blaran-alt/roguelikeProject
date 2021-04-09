@@ -1,0 +1,135 @@
+{
+  "version": 3,
+  "targets": {
+    ".NETFramework,Version=v4.6.1": {
+      "OpenTK/1.1.1589.5942": {
+        "type": "package",
+        "compile": {
+          "lib/NET40/OpenTK.dll": {}
+        },
+        "runtime": {
+          "lib/NET40/OpenTK.dll": {}
+        }
+      },
+      "RLNET/1.0.6": {
+        "type": "package",
+        "dependencies": {
+          "OpenTK": "1.1.1589.5942"
+        },
+        "compile": {
+          "lib/RLNET.dll": {}
+        },
+        "runtime": {
+          "lib/RLNET.dll": {}
+        }
+      },
+      "RogueSharp/4.2.0": {
+        "type": "package",
+        "compile": {
+          "lib/net40/RogueSharp.dll": {}
+        },
+        "runtime": {
+          "lib/net40/RogueSharp.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "OpenTK/1.1.1589.5942": {
+      "sha512": "kDJrP4a/bqlyFtMiy+dn9stzAoHxLQ2RvEwp6dcpixefdN1CVcQb9gPjpsEvpUXau+IoSyVsUHxNGDOs7bGUSA==",
+      "type": "package",
+      "path": "opentk/1.1.1589.5942",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/NET40/OpenTK.dll",
+        "lib/NET40/OpenTK.dll.config",
+        "lib/NET40/OpenTK.xml",
+        "opentk.1.1.1589.5942.nupkg.sha512",
+        "opentk.nuspec"
+      ]
+    },
+    "RLNET/1.0.6": {
+      "sha512": "uB0av8QFwSdfQrFCN7a3tk6YDwlQU0SPt3Oh7T7FUzoRwrfRSIF/albeHrlF5ZXN1XsHiUkOz7o9FIZg0plsCg==",
+      "type": "package",
+      "path": "rlnet/1.0.6",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/RLNET.dll",
+        "lib/ascii_8x8.png",
+        "rlnet.1.0.6.nupkg.sha512",
+        "rlnet.nuspec"
+      ]
+    },
+    "RogueSharp/4.2.0": {
+      "sha512": "z4Jc2jpu3lm2CzjQpTxDz8urHZc5CjIdTEeD2A0mUTrRdUBmneXjpbzk2CCzh5VSqgP/5r3kEaQczUgANOAmSA==",
+      "type": "package",
+      "path": "roguesharp/4.2.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net40/RogueSharp.dll",
+        "lib/netstandard1.0/RogueSharp.dll",
+        "roguesharp.4.2.0.nupkg.sha512",
+        "roguesharp.nuspec"
+      ]
+    }
+  },
+  "projectFileDependencyGroups": {
+    ".NETFramework,Version=v4.6.1": [
+      "RLNET >= 1.0.6",
+      "RogueSharp >= 4.2.0"
+    ]
+  },
+  "packageFolders": {
+    "/Users/DraxMoon/.nuget/packages/": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "/Users/DraxMoon/Downloads/Projet/Projet/Projet.csproj",
+      "projectName": "Projet",
+      "projectPath": "/Users/DraxMoon/Downloads/Projet/Projet/Projet.csproj",
+      "packagesPath": "/Users/DraxMoon/.nuget/packages/",
+      "outputPath": "/Users/DraxMoon/Downloads/Projet/Projet/obj/",
+      "projectStyle": "PackageReference",
+      "configFilePaths": [
+        "/Users/DraxMoon/.config/NuGet/NuGet.Config"
+      ],
+      "originalTargetFrameworks": [
+        "net461"
+      ],
+      "sources": {
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "net461": {
+          "targetAlias": "net461",
+          "projectReferences": {}
+        }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
+      }
+    },
+    "frameworks": {
+      "net461": {
+        "targetAlias": "net461",
+        "dependencies": {
+          "RLNET": {
+            "target": "Package",
+            "version": "[1.0.6, )"
+          },
+          "RogueSharp": {
+            "target": "Package",
+            "version": "[4.2.0, )"
+          }
+        },
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/5.0.101/RuntimeIdentifierGraph.json"
+      }
+    }
+  }
+}
