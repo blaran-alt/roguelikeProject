@@ -32,6 +32,38 @@
           "lib/net40/RogueSharp.dll": {}
         }
       }
+    },
+    ".NETFramework,Version=v4.6.1/win7-x86": {
+      "OpenTK/1.1.1589.5942": {
+        "type": "package",
+        "compile": {
+          "lib/NET40/OpenTK.dll": {}
+        },
+        "runtime": {
+          "lib/NET40/OpenTK.dll": {}
+        }
+      },
+      "RLNET/1.0.6": {
+        "type": "package",
+        "dependencies": {
+          "OpenTK": "1.1.1589.5942"
+        },
+        "compile": {
+          "lib/RLNET.dll": {}
+        },
+        "runtime": {
+          "lib/RLNET.dll": {}
+        }
+      },
+      "RogueSharp/4.2.0": {
+        "type": "package",
+        "compile": {
+          "lib/net40/RogueSharp.dll": {}
+        },
+        "runtime": {
+          "lib/net40/RogueSharp.dll": {}
+        }
+      }
     }
   },
   "libraries": {
@@ -83,29 +115,30 @@
     ]
   },
   "packageFolders": {
-    "/Users/DraxMoon/.nuget/packages/": {}
+    "C:\\Users\\hugod\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/DraxMoon/Downloads/Projet/Projet/Projet.csproj",
+      "projectUniqueName": "C:\\Users\\hugod\\Source\\Repos\\roguelikeProject\\Projet\\Projet.csproj",
       "projectName": "Projet",
-      "projectPath": "/Users/DraxMoon/Downloads/Projet/Projet/Projet.csproj",
-      "packagesPath": "/Users/DraxMoon/.nuget/packages/",
-      "outputPath": "/Users/DraxMoon/Downloads/Projet/Projet/obj/",
+      "projectPath": "C:\\Users\\hugod\\Source\\Repos\\roguelikeProject\\Projet\\Projet.csproj",
+      "packagesPath": "C:\\Users\\hugod\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\hugod\\Source\\Repos\\roguelikeProject\\Projet\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/Users/DraxMoon/.config/NuGet/NuGet.Config"
+        "C:\\Users\\hugod\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net461"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net461": {
-          "targetAlias": "net461",
           "projectReferences": {}
         }
       },
@@ -117,7 +150,6 @@
     },
     "frameworks": {
       "net461": {
-        "targetAlias": "net461",
         "dependencies": {
           "RLNET": {
             "target": "Package",
@@ -128,7 +160,12 @@
             "version": "[4.2.0, )"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/5.0.101/RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.402\\RuntimeIdentifierGraph.json"
+      }
+    },
+    "runtimes": {
+      "win7-x86": {
+        "#import": []
       }
     }
   }

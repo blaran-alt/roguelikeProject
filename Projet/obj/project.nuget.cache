@@ -1,12 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "9SARrbi7cteO0fWzQEsaRHrDJ2ZeMtpBsOCfhmOT8PwYW5Kn5lZ+yQliiBr+WYNwIDCNX+eoFmr1EmGgXrknjw==",
+  "dgSpecHash": "qpEty0GdHZnAycU2QuVFmGxQZNv942dZrAa6HwfSJ8ACvSeK17L49t0APWzLqxcwr4TCMzAc8i/4XMZUzXIuqg==",
   "success": true,
-  "projectFilePath": "/Users/DraxMoon/Downloads/Projet/Projet/Projet.csproj",
+  "projectFilePath": "C:\\Users\\hugod\\Source\\Repos\\roguelikeProject\\Projet\\Projet.csproj",
   "expectedPackageFiles": [
-    "/Users/DraxMoon/.nuget/packages/opentk/1.1.1589.5942/opentk.1.1.1589.5942.nupkg.sha512",
-    "/Users/DraxMoon/.nuget/packages/rlnet/1.0.6/rlnet.1.0.6.nupkg.sha512",
-    "/Users/DraxMoon/.nuget/packages/roguesharp/4.2.0/roguesharp.4.2.0.nupkg.sha512"
+    "C:\\Users\\hugod\\.nuget\\packages\\opentk\\1.1.1589.5942\\opentk.1.1.1589.5942.nupkg.sha512",
+    "C:\\Users\\hugod\\.nuget\\packages\\rlnet\\1.0.6\\rlnet.1.0.6.nupkg.sha512",
+    "C:\\Users\\hugod\\.nuget\\packages\\roguesharp\\4.2.0\\roguesharp.4.2.0.nupkg.sha512"
   ],
   "logs": []
 }

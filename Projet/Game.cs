@@ -12,7 +12,7 @@ namespace Projet
 {
     class Game
     {
-        // The screen height and width are in number of tiles
+        // The screen height and width are in number of tilesezqrgsthy
         private static readonly int _screenWidth = 100;
         private static readonly int _screenHeight = 70;
         private static RLRootConsole _rootConsole;
