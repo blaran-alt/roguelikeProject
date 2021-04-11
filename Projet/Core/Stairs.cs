@@ -27,6 +27,18 @@ namespace Projet.Core
         {
             get; set;
         }
+        public Point Coord
+        {
+            get
+            {
+                return new Point(X, Y);
+            }
+            set
+            {
+                X = value.X;
+                Y = value.Y;
+            }
+        }
         public bool IsUp
         {
             get; set;

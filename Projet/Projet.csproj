@@ -7,10 +7,14 @@
 
   <ItemGroup>
     <None Remove="ascii_8x8.png" />
+    <None Remove="GraphicTest.png" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="ascii_8x8.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="GraphicTest.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

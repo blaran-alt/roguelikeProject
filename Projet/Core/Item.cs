@@ -22,6 +22,18 @@ namespace Projet.Core
         public char Symbol { get; set; }
         public int X { get; set; }
         public int Y { get; set; }
+        public Point Coord
+        {
+            get
+            {
+                return new Point(X, Y);
+            }
+            set
+            {
+                X = value.X;
+                Y = value.Y;
+            }
+        }
         public void Draw(RLConsole console, IMap map)
         {
             if (map.IsInFov(X, Y))
@@ -33,7 +45,27 @@ namespace Projet.Core
         public void DrawInContainer(RLConsole console, int x, int y)
         {
             console.Set(x, y, Color, null, Symbol);
-            console.Print(x + 1, y,$" - {Quantity.ToString()}", Colors.Text);
+            console.Print(x + 1, y,$" - {Quantity}", Colors.Text);
+        }
+
+        public virtual bool Use()
+        {
+            return false;
+        }
+
+        public virtual void AlternateDrawInContainer(RLConsole console,int x, int y)
+        {
+            DrawInContainer(console, x, y);
+        }
+
+        public bool IsEqual(Item item)
+        {
+            return item.Name == Name && item.EffectCode == EffectCode;
+        }
+
+        public override string ToString()
+        {
+            return $"{Name} : effect = {EffectCode}, quantity = {Quantity} and (x,y) = ({X},{Y})";
         }
     }
 }

@@ -17,7 +17,7 @@ namespace Projet.Items
             Dropped = dropped;
             Quantity = quantity;
             Color = Colors.Gold;
-            Symbol = 'G';
+            Symbol = '0';
             X = x;
             Y = y;
         }

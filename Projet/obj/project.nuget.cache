@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "qpEty0GdHZnAycU2QuVFmGxQZNv942dZrAa6HwfSJ8ACvSeK17L49t0APWzLqxcwr4TCMzAc8i/4XMZUzXIuqg==",
+  "dgSpecHash": "pH1Fg2Vb05mXfgmsB8IMjXQx+POIFKCtZZR7FDs7mpVIPQq3jVNVxm1/nywUSUSIHkPkW4JA/cUTeNKov+2diQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\hugod\\Source\\Repos\\roguelikeProject\\Projet\\Projet.csproj",
+  "projectFilePath": "C:\\Users\\hugod\\source\\repos\\roguelikeProject\\Projet\\Projet.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\hugod\\.nuget\\packages\\opentk\\1.1.1589.5942\\opentk.1.1.1589.5942.nupkg.sha512",
     "C:\\Users\\hugod\\.nuget\\packages\\rlnet\\1.0.6\\rlnet.1.0.6.nupkg.sha512",

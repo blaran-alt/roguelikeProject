@@ -147,6 +147,18 @@ namespace Projet.Core
         public char Symbol { get; set; }
         public int X { get; set; }
         public int Y { get; set; }
+        public Point Coord
+        {
+            get
+            {
+                return new Point(X, Y);
+            }
+            set
+            {
+                X = value.X;
+                Y = value.Y;
+            }
+        }
 
         public void Draw(RLConsole console, IMap map)
         {

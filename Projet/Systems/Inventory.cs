@@ -7,6 +7,7 @@ using Projet.Core;
 using Projet.Interfaces;
 using RLNET;
 using Projet.Items;
+using RogueSharp;
 
 namespace Projet.Systems
 {
@@ -14,37 +15,61 @@ namespace Projet.Systems
     {
         public List<Item> Items { get; set; }
         public int Capacity { get;  set; }
-        public Selection Selection;
+        public UISelection Selection;
+
+        private List<Item> Potions
+        {
+            get
+            {
+                return Items.FindAll(i => i.Name == "Potion");
+            }
+        }
 
         public Inventory()
         {
-            Capacity = 20;
+            Capacity = 10;
             Items = new List<Item>();
-            Selection = new Selection(1, 3, Capacity);
+            Selection = new UISelection(2, 4);
+        }
+
+        public void AlternateDraw(RLConsole inventoryConsole, RLConsole mapConsole)
+        {
+            inventoryConsole.Print(25, 3, "Keys", Colors.Text);
+            int j = 5;
+            foreach (Item item in Items)
+            {
+                if(item.Name == "Key")
+                {
+                    item.AlternateDrawInContainer(inventoryConsole, 25, j);
+                    j += 2;
+                }
+            }
+
+            inventoryConsole.Print(48, 3, "Potions", Colors.Text);
+            CellSelection.CreateRoomWalls(50, 5, 3, 3, 186, 205, 201, 187, 200, 188, inventoryConsole);
+
+            if(Potions.Count() > 0)
+            {
+                Potion potion = Potions[Selection.AlternateSelectedItemIndex] as Potion;
+                potion.AlternateDrawInContainer(inventoryConsole, 51, 6);
+                if(potion.EffectCode == 2)
+                {
+                    CellSelection.HighlightMonstersAround(Game.Player.Coord, 5, mapConsole);
+                }
+            }
         }
 
         public void Draw(RLConsole console)
         {
-            for (int k = 0; k < console.Width; k++)
-            {
-                for (int l = 0; l < console.Height; l++)
-                {
-                    if(k==0 || k==console.Width-1 || l == 0 || l == console.Height - 1)
-                    {
-                        console.Set(k, l, null, RLColor.Black, null);
-                    }
-                }
-            }
             int width = console.Width - 4;
             int height = console.Height - 5;
-            int columnWidth = (int)Math.Ceiling((width * height) / (2f * Capacity));
-            Console.WriteLine("Console de taille {0} par {1} donc on aura {2} cells par colonne", width, height, columnWidth);
+            int columnWidth = (width * height) / (2 * Capacity);
             int i = 2;
-            int j = 3;
+            int j = 4;
             foreach (Item item in Items)
             {
-                int offset = (columnWidth - item.Quantity.ToString().Length + 4) / 2;
-                item.DrawInContainer(console, i, j);
+                int offset = columnWidth / 2 - 2;
+                item.DrawInContainer(console, i + offset, j);
                 i += columnWidth;
                 if(i+columnWidth >= width)
                 {
@@ -107,6 +132,58 @@ namespace Projet.Systems
                 }
             }
             return false;
+        }
+
+        public bool Use()
+        {
+            int index = Selection.SelectedItemIndex;
+            if(index < Items.Count())
+            {
+                Item item = Items[index];
+                if (item.Use())
+                {
+                    item.Quantity--;
+                    if(item.Quantity == 0)
+                    {
+                        Items.Remove(item);
+                    }
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public bool UsePotion()
+        {
+            int index = Selection.AlternateSelectedItemIndex;
+            if (index < Potions.Count())
+            {
+                Item item = Potions[index];
+                if (item.Use())
+                {
+                    item.Quantity--;
+                    if (item.Quantity == 0)
+                    {
+                        Items.Remove(item);
+                        if (--Selection.AlternateSelectedItemIndex < 0)
+                        {
+                            Selection.AlternateSelectedItemIndex = 0;
+                        }
+                    }
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public bool NextSelection()
+        {
+            int temp = Selection.AlternateSelectedItemIndex;
+            if (++Selection.AlternateSelectedItemIndex >= Potions.Count())
+            {
+                Selection.AlternateSelectedItemIndex = 0;
+            }
+            return temp != Selection.AlternateSelectedItemIndex;
         }
 
         public bool HasKeys()

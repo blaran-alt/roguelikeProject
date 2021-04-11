@@ -3,7 +3,7 @@ using RLNET;
 
 namespace Projet
 {
-    public class Colors
+    public static class Colors
     {
         public static RLColor PrimaryLightest = new RLColor(255, 208, 163);
         public static RLColor PrimaryLighter = new RLColor(254, 157, 65);
@@ -55,5 +55,9 @@ namespace Projet
 
         public static RLColor KoboldColor = new RLColor(210, 125, 44);
 
+        public static RLColor GetDarkerColor(RLColor color)
+        {
+            return RLColor.Blend(color, RLColor.Black, 150);
+        }
     }
 }

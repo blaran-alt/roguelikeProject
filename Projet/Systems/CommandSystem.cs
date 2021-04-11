@@ -82,6 +82,8 @@ namespace Projet.Systems
             IsPlayerTurn = false;
         }
 
+        private int speedBoostTimer = 5;
+
         public void ActivateMonsters()
         {
             IScheduleable scheduleable = Game.SchedulingSystem.Get();
@@ -89,6 +91,15 @@ namespace Projet.Systems
             {
                 IsPlayerTurn = true;
                 Game.SchedulingSystem.Add(Game.Player);
+                Player player = scheduleable as Player;
+                if(player.Speed == 5)
+                {
+                    if(--speedBoostTimer == 0)
+                    {
+                        player.Speed = 10;
+                        speedBoostTimer = 5;
+                    }
+                }
             }
             else
             {
@@ -194,7 +205,7 @@ namespace Projet.Systems
         }
 
         // Apply any damage that wasn't blocked to the defender
-        private void ResolveDamage(Actor defender, int damage)
+        public void ResolveDamage(Actor defender, int damage)
         {
             if (damage > 0)
             {
@@ -229,67 +240,6 @@ namespace Projet.Systems
                 Game.Map.AddItem(gold);
                 Game.MessageLog.Add($"  {defender.Name} died and dropped {defender.Gold} gold");
             }
-        }
-
-        public bool MoveSelection(Direction direction)
-        {
-            int x = Game.Player.X;
-            int y = Game.Player.Y;
-
-            switch (direction)
-            {
-                case Direction.Up:
-                    {
-                        y = Game.Player.Y - 1;
-                        break;
-                    }
-                case Direction.Down:
-                    {
-                        y = Game.Player.Y + 1;
-                        break;
-                    }
-                case Direction.Left:
-                    {
-                        x = Game.Player.X - 1;
-                        break;
-                    }
-                case Direction.Right:
-                    {
-                        x = Game.Player.X + 1;
-                        break;
-                    }
-                default:
-                    {
-                        return false;
-                    }
-            }
-
-            if (Game.Map.SetActorPosition(Game.Player, x, y))
-            {
-                Item item = Game.Map.GetItemAt(x, y);
-                if (item != null)
-                {
-                    if (Game.Inventory.PickUp(item))
-                    {
-                        Game.MessageLog.Add($"{Game.Player.Name} picked up {item.Quantity} {item.Name}");
-                        Game.Map.RemoveItem(item);
-                    }
-                    else
-                    {
-                        Game.MessageLog.Add($"You can't pick up this {item.Name}, your inventory must be full");
-                    }
-                }
-                return true;
-            }
-
-            Monster monster = Game.Map.GetMonsterAt(x, y);
-            if (monster != null)
-            {
-                Attack(Game.Player, monster);
-                return true;
-            }
-
-            return false;
         }
     }
 }

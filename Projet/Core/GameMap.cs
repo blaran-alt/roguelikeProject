@@ -20,23 +20,11 @@ namespace Projet.Core
         UpRight = 9
     }
 
-    public enum SelectionType
-    {
-        Radius = 0,
-        Area = 1,
-        RadiusBorder = 2,
-        AreaBorder = 3,
-        Column = 4,
-        Row = 5,
-        ColumnAndRow = 6,
-        Cross = 7
-    }
-
     public class GameMap : Map
     {
         public List<Rectangle> Rooms { get; set; }
         public List<Door> Doors { get; set; }
-        private List<Item> _items { get; set; }
+        private List<Item> Items { get; set; }
         private readonly List<Monster> _monsters;
 
         public Stairs StairsUp { get; set; }
@@ -49,7 +37,7 @@ namespace Projet.Core
             Rooms = new List<Rectangle>();
             _monsters = new List<Monster>();
             Doors = new List<Door>();
-            _items = new List<Item>();
+            Items = new List<Item>();
         }
 
         // The Draw method will be called each time the map is updated
@@ -69,7 +57,7 @@ namespace Projet.Core
             // Draws the 2 stairs in the map
             StairsUp.Draw(mapConsole, this);
             StairsDown.Draw(mapConsole, this);
-            foreach (Item item in _items)
+            foreach (Item item in Items)
             {
                 item.Draw(mapConsole, this);
             }
@@ -199,17 +187,58 @@ namespace Projet.Core
 
         public void AddItem(Item item)
         {
-            _items.Add(item);
+            Item check = GetItemAt(item.X, item.Y);
+            if (check != null)
+            {
+                if(check.IsEqual(item))
+                {
+                    check.Quantity += item.Quantity;
+                }
+                else
+                {
+                    if (IsWalkable(item.X + 1, item.Y))
+                    {
+                        item.X++;
+                        AddItem(item);
+                    }
+                    else if(IsWalkable(item.X - 1, item.Y))
+                    {
+                        item.X--;
+                        AddItem(item);
+                    }
+                    else if (IsWalkable(item.X, item.Y + 1))
+                    {
+                        item.Y++;
+                        AddItem(item);
+                    }
+                    else if (IsWalkable(item.X, item.Y - 1))
+                    {
+                        item.Y--;
+                        AddItem(item);
+                    }
+                    else
+                    {
+                        Point newLocation = GetRandomWalkableLocationInRoom(new Rectangle(item.X - 3, item.Y - 3, item.X + 3, item.Y + 3));
+                        item.X = newLocation.X;
+                        item.Y = newLocation.Y;
+                        AddItem(item);
+                    }
+                }
+            }
+            else
+            {
+                Items.Add(item);
+            }
         }
 
         public void RemoveItem(Item item)
         {
-            _items.Remove(item);
+            Items.Remove(item);
         }
 
         public Item GetItemAt(int x, int y)
         {
-            return _items.FirstOrDefault(i => i.X == x && i.Y == y);
+            return Items.FirstOrDefault(i => i.X == x && i.Y == y);
         }
 
         // Look for a random location in the room that is walkable.
@@ -272,6 +301,16 @@ namespace Projet.Core
         {
             Player player = Game.Player;
             return StairsDown.X == player.X && StairsDown.Y == player.Y && Game.Inventory.HasKeys();
+        }
+
+        public bool IsInMap(ICell cell)
+        {
+            return cell.X >= 0 && cell.X < Width && cell.Y >= 0 && cell.Y < Height;
+        }
+
+        public bool IsInMap(Point cell)
+        {
+            return cell.X >= 0 && cell.X < Width && cell.Y >= 0 && cell.Y < Height;
         }
     }
 }

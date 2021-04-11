@@ -12,14 +12,16 @@ namespace Projet
 {
     class Game
     {
-        // The screen height and width are in number of tilesezqrgsthy
+        // The screen height and width are in number of tiles
         private static readonly int _screenWidth = 100;
         private static readonly int _screenHeight = 70;
         private static RLRootConsole _rootConsole;
 
         // The map console takes up most of the screen and is where the map will be drawn
-        private static readonly int _mapWidth = 80;
-        private static readonly int _mapHeight = 48;
+        private static readonly int _onConsoleMapWidth = 80;
+        private static readonly int _onConsoleMapHeight = 48;
+        private static readonly int _mapWidth = 120;
+        private static readonly int _mapHeight = 60;
         private static RLConsole _mapConsole;
 
         // Below the map console is the message console which displays attack rolls and other information
@@ -42,7 +44,7 @@ namespace Projet
         private static RLConsole _UIConsole;
 
         private static readonly int _containerWidth = 70;
-        private static readonly int _containerHeight = 30;
+        private static readonly int _containerHeight = 24;
         private static RLConsole _containerConsole;
 
         public static Player Player { get;  set; }
@@ -66,22 +68,24 @@ namespace Projet
         private static int _mapLevel;
         public static int Level { get { return _mapLevel; } }
         private static bool _gameOver;
-        public static bool openInventory = false;
+        private static bool openInventory = false;
+        private static Point lastMousePos;
 
         public static void Main()
         {
+
             // Establish the seed for the random number generator from the current time
             seed = (int)DateTime.UtcNow.Ticks;
             Random = new DotNetRandom(seed);
 
             // This must be the exact name of the bitmap font file we are using or it will error.
-            string fontFileName = "ascii_8x8.png";
+            string fontFileName = "GraphicTest.png";
             // The title will appear at the top of the console window
             string consoleTitle = $"RogueSharp V3 Tutorial - Level {_mapLevel} - Seed {seed}";
 
             // Tell RLNet to use the bitmap font that we specified and that each tile is 8 x 8 pixels
             _rootConsole = new RLRootConsole(fontFileName, _screenWidth, _screenHeight,
-              8, 8, 1f, consoleTitle);
+              16, 16, .6f, consoleTitle);
 
             // Initialize the sub consoles that we will Blit to the root console
             _mapConsole = new RLConsole(_mapWidth, _mapHeight);
@@ -97,6 +101,7 @@ namespace Projet
             _rootConsole.Render += OnRootConsoleRender;
 
             // Set background color and text for each console
+            _rootConsole.SetBackColor(0, _inventoryHeight, _onConsoleMapWidth, _onConsoleMapHeight, Colors.Primary);
             _statConsole.SetBackColor(0, 0, _statWidth, _statHeight, Colors.Alternate);
             _statConsole.Print(1, 1, "Stats", RLColor.White);
 
@@ -104,12 +109,31 @@ namespace Projet
             _inventoryConsole.Print(1, 1, "Inventory", RLColor.White);
 
             InitializeGame();
-            for (int i = 0; i < 20; i++)
-            {
-                Inventory.PickUp(new Potion(i));
-            }
+
             // Begin RLNET's game loop
             _rootConsole.Run();
+        }
+
+        public static int Clamp(int value, int min, int max)
+        {
+            return Math.Min(Math.Max(value, min), max);
+        }
+
+        private static Point GetMapBlitOrigin()
+        {
+            int x = Clamp(Player.X - _onConsoleMapWidth / 2, 0 ,_mapWidth - _onConsoleMapWidth);
+            int y = Clamp(Player.Y - _onConsoleMapHeight / 2, 0,_mapHeight - _onConsoleMapHeight);
+            return new Point(x, y);
+        }
+
+        public static Point GetMapToConsoleCoord(Point point)
+        {
+            return point + GetMapBlitOrigin() - new Point(0, _inventoryHeight);
+        }
+
+        public static Point GetMousePosOnMap()
+        {
+            return new Point(_rootConsole.Mouse.X, _rootConsole.Mouse.Y) + GetMapBlitOrigin() - new Point(0, _inventoryHeight);
         }
 
         private static void InitializeGame()
@@ -126,7 +150,7 @@ namespace Projet
             MessageLog.Add("The rogue arrives on level 1");
             MessageLog.Add($"Level created with seed '{seed}'");
 
-            MapGenerator mapGenerator = new MapGenerator(_mapWidth, _mapHeight, 30, 13, 7, _mapLevel);
+            MapGenerator mapGenerator = new MapGenerator(_mapWidth, _mapHeight, 50, 20, 7, _mapLevel);
             Map = mapGenerator.CreateMap();
             Map.UpdatePlayerFieldOfView();
 
@@ -144,6 +168,7 @@ namespace Projet
         private static void OnRootConsoleUpdate(object sender, UpdateEventArgs e)
         {
             bool didPlayerAct = false;
+            bool selectionChanged = false;
             RLKeyPress keyPress = _rootConsole.Keyboard.GetKeyPress();
 
             if(keyPress != null)
@@ -160,9 +185,25 @@ namespace Projet
                         _rootConsole.Close();
                     }
                 }
-                else if(_gameOver && keyPress.Key == RLKey.Enter)
+                else if(keyPress.Key == RLKey.Enter)
                 {
-                    InitializeGame();
+                    if (_gameOver)
+                    {
+                        InitializeGame();
+                    }
+                    else if (openInventory)
+                    {
+                        if (Inventory.Use())
+                        {
+                            _renderRequired = true;
+                            openInventory = false;
+                        }
+                    }
+                }
+                else if(keyPress.Key == RLKey.H)
+                {
+                    CellSelection.StartShochWaveEffect(Player.Coord, 20);
+                    _renderRequired = true;
                 }
             }
 
@@ -180,7 +221,7 @@ namespace Projet
                 //------------------------------------------------------------//
                 if(keyPress != null)
                 {
-                    if (keyPress.Key == RLKey.V)
+                    if (keyPress.Key == RLKey.V && !openInventory)
                     {
                         _activeSelection = !_activeSelection;
                         _renderRequired = true;
@@ -192,33 +233,64 @@ namespace Projet
                     }
                     else if (keyPress.Key == RLKey.Q)
                     {
-                        _selectionSize--;
-                        _renderRequired = true;
-                        if (_selectionSize == 0)
+                        if (_activeSelection)
                         {
-                            _selectionSize = 1;
-                            _renderRequired = false;
+                            _selectionSize--;
+                            _renderRequired = true;
+                            if (_selectionSize == 0)
+                            {
+                                _selectionSize = 1;
+                                _renderRequired = false;
+                            }
+                        }
+                        else
+                        {
+                            if (Inventory.UsePotion())
+                            {
+                                _renderRequired = true;
+                            }
                         }
                     }
                     else if (keyPress.Key == RLKey.E)
                     {
-                        _selectionSize++;
-                        _renderRequired = true;
-                        if (_selectionSize == 51)
+                        if (_activeSelection)
                         {
-                            _selectionSize = 50;
-                            _renderRequired = false;
+                            _selectionSize++;
+                            _renderRequired = true;
+                            if (_selectionSize == 51)
+                            {
+                                _selectionSize = 50;
+                                _renderRequired = false;
+                            }
+                        }
+                        else
+                        {
+                            if (Inventory.NextSelection())
+                            {
+                                _renderRequired = true;
+                            }
                         }
                     }
                     else if(keyPress.Key == RLKey.I)
                     {
                         openInventory = !openInventory;
+                        if (openInventory)
+                        {
+                            Inventory.Selection.Reset();
+                            _activeSelection = false;
+                        }
                         _renderRequired = true;
                     }
                 }
                 if (_activeSelection)
                 {
-                    _renderRequired = true;
+                    RLMouse mouse = _rootConsole.Mouse;
+                    Point mousePos = new Point(mouse.X, mouse.Y);
+                    if (mousePos != lastMousePos)
+                    {
+                        _renderRequired = true;
+                    }
+                    lastMousePos = mousePos;
                 }
                 //------------------------------------------------------------------//
 
@@ -228,29 +300,52 @@ namespace Projet
                     {
                         if (keyPress.Key == RLKey.W || keyPress.Key == RLKey.Up)
                         {
-                            didPlayerAct = CommandSystem.MovePlayer(Direction.Up);
+                            if (openInventory)
+                            {
+                                selectionChanged = Inventory.Selection.MoveSelection(Direction.Up, Inventory.Items.Count());
+                            }
+                            else
+                            {
+                                didPlayerAct = CommandSystem.MovePlayer(Direction.Up);
+                            }
                         }
                         else if (keyPress.Key == RLKey.S || keyPress.Key == RLKey.Down)
                         {
-                            didPlayerAct = CommandSystem.MovePlayer(Direction.Down);
+                            if (openInventory)
+                            {
+                                selectionChanged = Inventory.Selection.MoveSelection(Direction.Down, Inventory.Items.Count());
+                            }
+                            else
+                            {
+                                didPlayerAct = CommandSystem.MovePlayer(Direction.Down);
+                            }
                         }
                         else if (keyPress.Key == RLKey.A || keyPress.Key == RLKey.Left)
                         {
-                            didPlayerAct = CommandSystem.MovePlayer(Direction.Left);
+                            if (!openInventory)
+                            {
+                                didPlayerAct = CommandSystem.MovePlayer(Direction.Left);
+                            }
+
                         }
                         else if (keyPress.Key == RLKey.D || keyPress.Key == RLKey.Right)
                         {
-                            didPlayerAct = CommandSystem.MovePlayer(Direction.Right);
+                            if (!openInventory)
+                            {
+                                didPlayerAct = CommandSystem.MovePlayer(Direction.Right);
+                            }
                         }
-                        else if (keyPress.Key == RLKey.Period)
+                        else if (keyPress.Key == RLKey.Period && !openInventory)
                         {
                             if (Map.CanMoveDownToNextLevel())
                             {
-                                MapGenerator mapGenerator = new MapGenerator(_mapWidth, _mapHeight, 20, 13, 7, ++_mapLevel);
+                                MapGenerator mapGenerator = new MapGenerator(_mapWidth, _mapHeight, 50, 20, 7, ++_mapLevel);
                                 Map = mapGenerator.CreateMap();
                                 MessageLog = new MessageLog();
                                 CommandSystem = new CommandSystem();
                                 _rootConsole.Title = $"RogueSharp RLNet Tutorial - Level {_mapLevel} - Seed {seed}";
+                                MessageLog.Add($"The rogue arrives on level {_mapLevel}");
+                                MessageLog.Add($"Level created with seed '{seed}'");
                                 didPlayerAct = true;
                             }
                         }
@@ -259,6 +354,10 @@ namespace Projet
                         {
                             _renderRequired = true;
                             CommandSystem.EndPlayerTurn();
+                        }
+                        if (selectionChanged)
+                        {
+                            _renderRequired = true;
                         }
                     }
                 }
@@ -275,12 +374,14 @@ namespace Projet
         {
             if (_renderRequired)
             {
+                _rootConsole.Clear();
                 _mapConsole.Clear();
                 _statConsole.Clear();
                 _messageConsole.Clear();
                 _inventoryConsole.Clear();
                 _containerConsole.Clear();
 
+                _rootConsole.SetBackColor(0, _inventoryHeight, _onConsoleMapWidth, _onConsoleMapHeight, Colors.Primary);
                 _statConsole.SetBackColor(0, 0, _statWidth, _statHeight, Colors.Alternate);
                 _messageConsole.SetBackColor(0, 0, _messageWidth , _messageHeight, Colors.Secondary);
                 _mapConsole.SetBackColor(0, 0, _mapWidth, _mapHeight, Colors.Primary);
@@ -291,30 +392,28 @@ namespace Projet
                 Player.Draw(_mapConsole, Map);
                 MessageLog.Draw(_messageConsole);
                 Player.DrawStats(_statConsole);
-                Inventory.Draw(_inventoryConsole);
+                _statConsole.Print(_statWidth + 3, _statHeight - 3, $"({Player.X},{Player.Y})",Colors.Text);
+                Inventory.AlternateDraw(_inventoryConsole, _mapConsole);
 
                 _statConsole.Print(6, _statHeight - 2, $"({Player.X},{Player.Y})", Colors.Text);
 
                 if (_activeSelection)
                 {
-                    foreach (ICell cell in SelectCellsAroundMouse())
-                    {
-                        if (IsInMap(cell) && (_highlightWalls || cell.IsExplored))
-                        {
-                            _mapConsole.SetBackColor(cell.X, cell.Y, RLColor.Yellow);
-                        }
-                    }
+                    CellSelection.DrawCellsAroudPoint(GetMousePosOnMap(), _currentSelectionType, _selectionSize, _highlightWalls, _mapConsole);
                 }
 
+                _renderRequired = CellSelection.ShockWaveEffect( _mapConsole);
+
                 // Blit the sub consoles to the root console in the correct locations
-                RLConsole.Blit(_mapConsole, 0, 0, _mapWidth, _mapHeight, _rootConsole, 0, _inventoryHeight);
-                RLConsole.Blit(_statConsole, 0, 0, _statWidth, _statHeight, _rootConsole, _mapWidth, 0);
+                Point mapBlitOrigin = GetMapBlitOrigin();
+                RLConsole.Blit(_mapConsole, mapBlitOrigin.X, mapBlitOrigin.Y, _onConsoleMapWidth, _onConsoleMapHeight, _rootConsole, 0, _inventoryHeight);
+                RLConsole.Blit(_statConsole, 0, 0, _statWidth, _statHeight, _rootConsole, _onConsoleMapWidth, 0);
                 RLConsole.Blit(_messageConsole, 0, 0, _messageWidth, _messageHeight, _rootConsole, 0, _screenHeight - _messageHeight);
                 RLConsole.Blit(_inventoryConsole, 0, 0, _inventoryWidth, _inventoryHeight, _rootConsole, 0, 0);
 
                 if (openInventory)
                 {
-                    Inventory.Selection.Reset();
+                    _containerConsole.Clear();
                     _containerConsole.SetBackColor(0, 0, _containerWidth, _containerHeight, Colors.ComplimentDarker);
                     _containerConsole.Print(1, 1, "Inventory", RLColor.White);
                     Inventory.Draw(_containerConsole);
@@ -324,27 +423,10 @@ namespace Projet
 
                 // Tell RLNET to draw the console that we set
                 _rootConsole.Draw();
-                _renderRequired = false;
-            }
-            else if (_activeSelection)
-            {
-                _mapConsole.Clear();
-                _mapConsole.SetBackColor(0, 0, _mapWidth, _mapHeight, Colors.Primary);
-                Map.Draw(_mapConsole, _statConsole);
-                Player.Draw(_mapConsole, Map);
-
-                foreach (ICell cell in SelectCellsAroundMouse())
-                {
-                    if(IsInMap(cell) && (_highlightWalls || cell.IsExplored))
-                    {
-                        _mapConsole.SetBackColor(cell.X, cell.Y, RLColor.Yellow);
-                    }
-                }
-                RLConsole.Blit(_mapConsole, 0, 0, _mapWidth, _mapHeight, _rootConsole, 0, _inventoryHeight);
-                _rootConsole.Draw();
             }
             if (_gameOver)
             {
+                _rootConsole.Clear();
                 _mapConsole.Clear();
                 _statConsole.Clear();
                 _messageConsole.Clear();
@@ -368,96 +450,15 @@ namespace Projet
                 _UIConsole.Print(10, 3, "GAME OVER", RLColor.White);
                 _UIConsole.Print(3, 6, "Press Enter to play again", RLColor.LightGray);
 
-                RLConsole.Blit(_mapConsole, 0, 0, _mapWidth, _mapHeight, _rootConsole, 0, _inventoryHeight);
-                RLConsole.Blit(_statConsole, 0, 0, _statWidth, _statHeight, _rootConsole, _mapWidth, 0);
+                Point mapBlitOrigin = GetMapBlitOrigin();
+                RLConsole.Blit(_mapConsole, mapBlitOrigin.X, mapBlitOrigin.Y, _onConsoleMapWidth, _onConsoleMapHeight, _rootConsole, 0, _inventoryHeight);
+                RLConsole.Blit(_statConsole, 0, 0, _statWidth, _statHeight, _rootConsole, _onConsoleMapWidth, 0);
                 RLConsole.Blit(_messageConsole, 0, 0, _messageWidth, _messageHeight, _rootConsole, 0, _screenHeight - _messageHeight);
                 RLConsole.Blit(_inventoryConsole, 0, 0, _inventoryWidth, _inventoryHeight, _rootConsole, 0, 0);
                 RLConsole.Blit(_UIConsole, 0, 0, _UIWidth, _UIHeight, _rootConsole, 35, 25);
 
                 _rootConsole.Draw();
             }
-        }
-
-        private static IEnumerable<ICell> SelectCellsAroundMouse()
-        {
-            int x = _rootConsole.Mouse.X;
-            int y = _rootConsole.Mouse.Y - _inventoryHeight;
-            if (x < 0 || x >= _mapWidth || y < 0 || y >= _mapHeight)
-            {
-                return new List<ICell>();
-            }
-            IEnumerable<ICell> selectedCells;
-            switch (_currentSelectionType)
-            {
-                case SelectionType.Radius:
-                    {
-                        selectedCells = Map.GetCellsInCircle(x, y, _selectionSize);
-                        break;
-                    }
-                case SelectionType.Area:
-                    {
-                        selectedCells = Map.GetCellsInSquare(x, y, _selectionSize);
-                        break;
-                    }
-                case SelectionType.RadiusBorder:
-                    {
-                        selectedCells = Map.GetBorderCellsInCircle(x, y, _selectionSize);
-                        break;
-                    }
-                case SelectionType.AreaBorder:
-                    {
-                        selectedCells = Map.GetBorderCellsInSquare(x, y, _selectionSize);
-                        break;
-                    }
-                case SelectionType.Row:
-                    {
-                        selectedCells = Map.GetCellsInRows(y);
-                        break;
-                    }
-                case SelectionType.Column:
-                    {
-                        selectedCells = Map.GetCellsInColumns(x);
-                        break;
-                    }
-                case SelectionType.ColumnAndRow:
-                    {
-                        List<ICell> rowCells = Map.GetCellsInRows(y).ToList();
-                        rowCells.AddRange(Map.GetCellsInColumns(x));
-                        selectedCells = rowCells;
-                        break;
-                    }
-                case SelectionType.Cross:
-                    {
-                        if (x < 1 || x >= _mapWidth - 1 || y < 1 || y >= _mapHeight - 1)
-                        {
-                            return new List<ICell>();
-                        }
-                        List<ICell> rowCells = Map.GetCellsInRows(y + 1, y - 1).ToList();
-                        rowCells.AddRange(Map.GetCellsInColumns(x + 1, x - 1));
-                        selectedCells = rowCells;
-                        break;
-                    }
-                default:
-                    {
-                        selectedCells = Map.GetCellsInCircle(x, y, _selectionSize);
-                        break;
-                    }
-            }
-            if (_highlightWalls)
-            {
-                return selectedCells;
-            }
-            return FilterWalls(selectedCells);
-        }
-
-        private static IEnumerable<ICell> FilterWalls(IEnumerable<ICell> cells)
-        {
-            return cells.Where(c => c.IsWalkable);
-        }
-
-        private static bool IsInMap(ICell cell)
-        {
-            return cell.X >= 0 && cell.X < _mapWidth && cell.Y >= 0 && cell.Y < _mapHeight;
         }
 
         public static void GameOver()
