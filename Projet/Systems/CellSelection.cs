@@ -125,7 +125,7 @@ namespace Projet.Systems
         {
             foreach(ICell cell in SelectCellsAroundPoint(center, SelectionType.Radius, radius, false))
             {
-                if(Game.Map.GetMonsterAt(cell.X, cell.Y) != null)
+                if(Game.Map.GetMonsterAt(cell.X, cell.Y) != null && Game.Map.IsInFov(cell.X, cell.Y))
                 {
                     console.SetBackColor(cell.X, cell.Y, Colors.AlternateDarkest);
                 }

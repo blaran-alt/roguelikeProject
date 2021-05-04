@@ -2,6 +2,30 @@
   "version": 3,
   "targets": {
     ".NETFramework,Version=v4.6.1": {
+      "LibNoise/0.2.0": {
+        "type": "package",
+        "compile": {
+          "lib/NET45/LibNoise.dll": {}
+        },
+        "runtime": {
+          "lib/NET45/LibNoise.dll": {}
+        }
+      },
+      "Microsoft.DotNet.Analyzers.Compatibility/0.2.12-alpha": {
+        "type": "package",
+        "build": {
+          "build/_._": {}
+        }
+      },
+      "MurMurHashAlgorithm/1.0.2": {
+        "type": "package",
+        "compile": {
+          "lib/net35/MurMurHashAlgorithm.dll": {}
+        },
+        "runtime": {
+          "lib/net35/MurMurHashAlgorithm.dll": {}
+        }
+      },
       "OpenTK/1.1.1589.5942": {
         "type": "package",
         "compile": {
@@ -9,6 +33,29 @@
         },
         "runtime": {
           "lib/NET40/OpenTK.dll": {}
+        }
+      },
+      "RandomAccessPerlinNoise/1.0.1": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.DotNet.Analyzers.Compatibility": "0.2.12-alpha",
+          "MurMurHashAlgorithm": "1.0.2",
+          "RandomImpls": "1.0.3"
+        },
+        "compile": {
+          "lib/net46/RandomAccessPerlinNoise.dll": {}
+        },
+        "runtime": {
+          "lib/net46/RandomAccessPerlinNoise.dll": {}
+        }
+      },
+      "RandomImpls/1.0.3": {
+        "type": "package",
+        "compile": {
+          "lib/net35/RandomImpls.dll": {}
+        },
+        "runtime": {
+          "lib/net35/RandomImpls.dll": {}
         }
       },
       "RLNET/1.0.6": {
@@ -30,10 +77,43 @@
         },
         "runtime": {
           "lib/net40/RogueSharp.dll": {}
+        }
+      },
+      "SimplexNoise/2.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/net45/SimplexNoise.dll": {}
+        },
+        "runtime": {
+          "lib/net45/SimplexNoise.dll": {}
         }
       }
     },
     ".NETFramework,Version=v4.6.1/win7-x86": {
+      "LibNoise/0.2.0": {
+        "type": "package",
+        "compile": {
+          "lib/NET45/LibNoise.dll": {}
+        },
+        "runtime": {
+          "lib/NET45/LibNoise.dll": {}
+        }
+      },
+      "Microsoft.DotNet.Analyzers.Compatibility/0.2.12-alpha": {
+        "type": "package",
+        "build": {
+          "build/_._": {}
+        }
+      },
+      "MurMurHashAlgorithm/1.0.2": {
+        "type": "package",
+        "compile": {
+          "lib/net35/MurMurHashAlgorithm.dll": {}
+        },
+        "runtime": {
+          "lib/net35/MurMurHashAlgorithm.dll": {}
+        }
+      },
       "OpenTK/1.1.1589.5942": {
         "type": "package",
         "compile": {
@@ -41,6 +121,29 @@
         },
         "runtime": {
           "lib/NET40/OpenTK.dll": {}
+        }
+      },
+      "RandomAccessPerlinNoise/1.0.1": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.DotNet.Analyzers.Compatibility": "0.2.12-alpha",
+          "MurMurHashAlgorithm": "1.0.2",
+          "RandomImpls": "1.0.3"
+        },
+        "compile": {
+          "lib/net46/RandomAccessPerlinNoise.dll": {}
+        },
+        "runtime": {
+          "lib/net46/RandomAccessPerlinNoise.dll": {}
+        }
+      },
+      "RandomImpls/1.0.3": {
+        "type": "package",
+        "compile": {
+          "lib/net35/RandomImpls.dll": {}
+        },
+        "runtime": {
+          "lib/net35/RandomImpls.dll": {}
         }
       },
       "RLNET/1.0.6": {
@@ -62,11 +165,66 @@
         },
         "runtime": {
           "lib/net40/RogueSharp.dll": {}
+        }
+      },
+      "SimplexNoise/2.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/net45/SimplexNoise.dll": {}
+        },
+        "runtime": {
+          "lib/net45/SimplexNoise.dll": {}
         }
       }
     }
   },
   "libraries": {
+    "LibNoise/0.2.0": {
+      "sha512": "tdYokEHB4QmTtM05X3ITNTaDv5odD+pOkzyemHBlVqLVTyfXwWl+l9qz81ZSBTGnQn0gkxgH1q5iXGwlT8GKjg==",
+      "type": "package",
+      "path": "libnoise/0.2.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/NET35/LibNoise.XML",
+        "lib/NET35/LibNoise.dll",
+        "lib/NET40/LibNoise.XML",
+        "lib/NET40/LibNoise.dll",
+        "lib/NET45/LibNoise.XML",
+        "lib/NET45/LibNoise.dll",
+        "libnoise.0.2.0.nupkg.sha512",
+        "libnoise.nuspec"
+      ]
+    },
+    "Microsoft.DotNet.Analyzers.Compatibility/0.2.12-alpha": {
+      "sha512": "uu3yAa6hQZJoJZfBwXSvh+bN03KO06sWNZXwodxz7J1wva1g1+O4TnWJxX4dmsP6tLDTZtKy8IHiPLOOZIwt9w==",
+      "type": "package",
+      "path": "microsoft.dotnet.analyzers.compatibility/0.2.12-alpha",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "analyzers/dotnet/cs/Microsoft.DotNet.Analyzers.Compatibility.dll",
+        "analyzers/dotnet/cs/Microsoft.DotNet.Csv.dll",
+        "build/Microsoft.DotNet.Analyzers.Compatibility.targets",
+        "microsoft.dotnet.analyzers.compatibility.0.2.12-alpha.nupkg.sha512",
+        "microsoft.dotnet.analyzers.compatibility.nuspec"
+      ]
+    },
+    "MurMurHashAlgorithm/1.0.2": {
+      "sha512": "PHLLru7sgiM1EmF6IwguzhJWC7e8PMRUPNvTyXorgwqsV9grT8zAz73OJxYSJq/evyS548RkBxZMGdlfo+1N4g==",
+      "type": "package",
+      "path": "murmurhashalgorithm/1.0.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net35/MurMurHashAlgorithm.dll",
+        "lib/net35/MurMurHashAlgorithm.xml",
+        "lib/netcoreapp2.0/MurMurHashAlgorithm.dll",
+        "lib/netcoreapp2.0/MurMurHashAlgorithm.xml",
+        "murmurhashalgorithm.1.0.2.nupkg.sha512",
+        "murmurhashalgorithm.nuspec"
+      ]
+    },
     "OpenTK/1.1.1589.5942": {
       "sha512": "kDJrP4a/bqlyFtMiy+dn9stzAoHxLQ2RvEwp6dcpixefdN1CVcQb9gPjpsEvpUXau+IoSyVsUHxNGDOs7bGUSA==",
       "type": "package",
@@ -79,6 +237,36 @@
         "lib/NET40/OpenTK.xml",
         "opentk.1.1.1589.5942.nupkg.sha512",
         "opentk.nuspec"
+      ]
+    },
+    "RandomAccessPerlinNoise/1.0.1": {
+      "sha512": "cRU28fhSU8Ek7PJzy4bf4TPFZ0iBfL2KR1TuZqta/D1q0Kjd34dscZ2BjE4zMBErRzqAjljj5kAVkDK3wzC8UA==",
+      "type": "package",
+      "path": "randomaccessperlinnoise/1.0.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net46/RandomAccessPerlinNoise.dll",
+        "lib/net46/RandomAccessPerlinNoise.xml",
+        "lib/netcoreapp2.0/RandomAccessPerlinNoise.dll",
+        "lib/netcoreapp2.0/RandomAccessPerlinNoise.xml",
+        "randomaccessperlinnoise.1.0.1.nupkg.sha512",
+        "randomaccessperlinnoise.nuspec"
+      ]
+    },
+    "RandomImpls/1.0.3": {
+      "sha512": "8UNZ0PEmEUdnmOBzrE0N4ze60PX0l6aLQhnYz8pObmdXxxfsRJ8uBUsAgtBr7O/GU2Z303YmH4FEhNrMJZDN1A==",
+      "type": "package",
+      "path": "randomimpls/1.0.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net35/RandomImpls.dll",
+        "lib/net35/RandomImpls.xml",
+        "lib/netcoreapp2.0/RandomImpls.dll",
+        "lib/netcoreapp2.0/RandomImpls.xml",
+        "randomimpls.1.0.3.nupkg.sha512",
+        "randomimpls.nuspec"
       ]
     },
     "RLNET/1.0.6": {
@@ -106,12 +294,34 @@
         "roguesharp.4.2.0.nupkg.sha512",
         "roguesharp.nuspec"
       ]
+    },
+    "SimplexNoise/2.0.0": {
+      "sha512": "v9q0D/5PSUx3T8ZIixjDEGlLYIDhkTbeQOgz/SddoKw16aoz4LFlg7FTu9DD0304p2m9VsHfTmygCgZ2FzIDVw==",
+      "type": "package",
+      "path": "simplexnoise/2.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.txt",
+        "README.md",
+        "lib/net40/SimplexNoise.dll",
+        "lib/net45/SimplexNoise.dll",
+        "lib/net472/SimplexNoise.dll",
+        "lib/netcoreapp2.2/SimplexNoise.dll",
+        "lib/netstandard1.0/SimplexNoise.dll",
+        "lib/netstandard2.0/SimplexNoise.dll",
+        "simplexnoise.2.0.0.nupkg.sha512",
+        "simplexnoise.nuspec"
+      ]
     }
   },
   "projectFileDependencyGroups": {
     ".NETFramework,Version=v4.6.1": [
+      "LibNoise >= 0.2.0",
       "RLNET >= 1.0.6",
-      "RogueSharp >= 4.2.0"
+      "RandomAccessPerlinNoise >= 1.0.1",
+      "RogueSharp >= 4.2.0",
+      "SimplexNoise >= 2.0.0"
     ]
   },
   "packageFolders": {
@@ -151,13 +361,25 @@
     "frameworks": {
       "net461": {
         "dependencies": {
+          "LibNoise": {
+            "target": "Package",
+            "version": "[0.2.0, )"
+          },
           "RLNET": {
             "target": "Package",
             "version": "[1.0.6, )"
           },
+          "RandomAccessPerlinNoise": {
+            "target": "Package",
+            "version": "[1.0.1, )"
+          },
           "RogueSharp": {
             "target": "Package",
             "version": "[4.2.0, )"
+          },
+          "SimplexNoise": {
+            "target": "Package",
+            "version": "[2.0.0, )"
           }
         },
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.402\\RuntimeIdentifierGraph.json"

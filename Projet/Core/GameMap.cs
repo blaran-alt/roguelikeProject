@@ -26,9 +26,12 @@ namespace Projet.Core
         public List<Door> Doors { get; set; }
         private List<Item> Items { get; set; }
         private readonly List<Monster> _monsters;
+        public List<Box> Boxs { get; set; }
 
         public Stairs StairsUp { get; set; }
         public Stairs StairsDown { get; set; }
+
+        public int[,] dijkstraIndeces;
 
         public GameMap()
         {
@@ -38,6 +41,18 @@ namespace Projet.Core
             _monsters = new List<Monster>();
             Doors = new List<Door>();
             Items = new List<Item>();
+            Boxs = new List<Box>();
+        }
+
+        public void ResetDijkstraIndeces()
+        {
+            for (int i = 0; i < Width; i++)
+            {
+                for (int j = 0; j < Height; j++)
+                {
+                    dijkstraIndeces[i, j] = -1;
+                }
+            }
         }
 
         // The Draw method will be called each time the map is updated
@@ -49,29 +64,34 @@ namespace Projet.Core
             {
                 SetConsoleSymbolForCell(mapConsole, cell);
             }
-            // Places the doors
-            foreach (Door door in Doors)
-            {
-                door.Draw(mapConsole, this);
-            }
-            // Draws the 2 stairs in the map
-            StairsUp.Draw(mapConsole, this);
-            StairsDown.Draw(mapConsole, this);
-            foreach (Item item in Items)
-            {
-                item.Draw(mapConsole, this);
-            }
-            // Places the monsters after the doors,stairs and items so they appear above them
-            int i = 0;
-            foreach (Monster monster in _monsters)
-            {
-                monster.Draw(mapConsole, this);
-                if(IsInFov(monster.X, monster.Y))
-                {
-                    monster.DrawStats(statConsole, i);
-                    i++;
-                }
-            }
+            //// Places the doors
+            //foreach (Door door in Doors)
+            //{
+            //    door.Draw(mapConsole, this, false);
+            //}
+            //// Draws the 2 stairs in the map
+            //StairsUp.Draw(mapConsole, this, false);
+            //StairsDown.Draw(mapConsole, this, false);
+            //foreach (Item item in Items)
+            //{
+            //    item.Draw(mapConsole, this, false);
+            //}
+            //// Places the monsters after the doors,stairs and items so they appear above them
+            //int i = 0;
+            //foreach (Monster monster in _monsters)
+            //{
+            //    monster.Draw(mapConsole, this, false);
+            //    if (IsInFov(monster.X, monster.Y))
+            //    {
+            //        monster.DrawStats(statConsole, i);
+            //        i++;
+            //    }
+            //}
+
+            //foreach (Box box in Boxs)
+            //{
+            //    box.Draw(mapConsole, this, false);
+            //}
         }
 
         private void SetConsoleSymbolForCell(RLConsole console, Cell cell)
@@ -90,22 +110,30 @@ namespace Projet.Core
                 if (cell.IsWalkable)
                 {
                     console.Set(cell.X, cell.Y, Colors.FloorFov, Colors.FloorBackgroundFov, '.');
+                    //console.Set(cell.X, cell.Y, Colors.FloorFov, Colors.FloorBackgroundFov, ' ' );
+                    //console.Print(cell.X, cell.Y, dijkstraIndeces[cell.X, cell.Y].ToString(), Colors.FloorFov);
                 }
                 else
                 {
                     console.Set(cell.X, cell.Y, Colors.WallFov, Colors.WallBackgroundFov, '#');
+                    //console.Set(cell.X, cell.Y, Colors.WallFov, Colors.WallBackgroundFov, ' ');
+                    //console.Print(cell.X, cell.Y, dijkstraIndeces[cell.X, cell.Y].ToString(), Colors.WallFov);
                 }
             }
             // When a cell is outside of the field of view draw it with darker colors
-            else
+            else if(Game.Level != 1)
             {
                 if (cell.IsWalkable)
                 {
                     console.Set(cell.X, cell.Y, Colors.Floor, Colors.FloorBackground, '.');
+                    //console.Set(cell.X, cell.Y, Colors.Floor, Colors.FloorBackground, ' ');
+                    //console.Print(cell.X, cell.Y, dijkstraIndeces[cell.X, cell.Y].ToString(), Colors.Floor);
                 }
                 else
                 {
                     console.Set(cell.X, cell.Y, Colors.Wall, Colors.WallBackground, '#');
+                    //console.Set(cell.X, cell.Y, Colors.Wall, Colors.WallBackground, ' ');
+                    //console.Print(cell.X, cell.Y, dijkstraIndeces[cell.X, cell.Y].ToString(), Colors.Wall);
                 }
             }
         }
@@ -114,7 +142,12 @@ namespace Projet.Core
         {
             Player player = Game.Player;
             // Compute the field-of-view based on the player's location and awareness
-            ComputeFov(player.X, player.Y, player.Awareness, true);
+            int playerAwareness = player.Awareness;
+            if(Game.Level == 1)
+            {
+                playerAwareness -= 7;
+            }
+            ComputeFov(player.X, player.Y, playerAwareness, true);
             // Mark all cells in field-of-view as having been explored
             foreach (Cell cell in GetAllCells())
             {
@@ -128,7 +161,7 @@ namespace Projet.Core
         public bool SetActorPosition(Actor actor, int x, int y)
         {
             // Only allow actor placement if the cell is walkable
-            if (GetCell(x, y).IsWalkable)
+            if (IsInMap(x,y) && GetCell(x, y).IsWalkable)
             {
                 // The cell the actor was previously on is now walkable
                 SetIsWalkable(actor.X, actor.Y, true);
@@ -144,6 +177,23 @@ namespace Projet.Core
                 {
                     UpdatePlayerFieldOfView();
                 }
+                return true;
+            }
+            return false;
+        }
+
+        public bool SetActorPosition(Box actor, int x, int y)
+        {
+            // Only allow actor placement if the cell is walkable
+            if (GetCell(x, y).IsWalkable)
+            {
+                // The cell the actor was previously on is now walkable
+                SetIsWalkable(actor.X, actor.Y, true);
+                // Update the actor's position
+                actor.X = x;
+                actor.Y = y;
+                // The new cell the actor is on is now not walkable
+                SetIsWalkable(actor.X, actor.Y, false);
                 return true;
             }
             return false;
@@ -241,6 +291,21 @@ namespace Projet.Core
             return Items.FirstOrDefault(i => i.X == x && i.Y == y);
         }
 
+        public void AddBox(Box box)
+        {
+            Boxs.Add(box);
+            SetIsWalkable(box.X, box.Y, false);
+        }
+
+        public Box GetBoxAt(Point coord)
+        {
+            return Boxs.FirstOrDefault(b => b.Coord == coord);
+        }
+        public Box GetBoxAt(int x, int y)
+        {
+            return Boxs.FirstOrDefault(b => b.X == x && b.Y == y);
+        }
+
         // Look for a random location in the room that is walkable.
         public Point GetRandomWalkableLocationInRoom(Rectangle room)
         {
@@ -307,10 +372,13 @@ namespace Projet.Core
         {
             return cell.X >= 0 && cell.X < Width && cell.Y >= 0 && cell.Y < Height;
         }
-
         public bool IsInMap(Point cell)
         {
             return cell.X >= 0 && cell.X < Width && cell.Y >= 0 && cell.Y < Height;
+        }
+        public bool IsInMap(int x,int y)
+        {
+            return x >= 0 && x < Width && y >= 0 && y < Height;
         }
     }
 }

@@ -43,9 +43,7 @@ namespace Projet.Behaviors
 
                 try
                 {
-                    path = pathFinder.ShortestPath(
-                    map.GetCell(monster.X, monster.Y),
-                    map.GetCell(player.X, player.Y));
+                    path = pathFinder.ShortestPath(map.GetCell(monster.X, monster.Y), map.GetCell(player.X, player.Y));
                 }
                 catch (PathNotFoundException)
                 {

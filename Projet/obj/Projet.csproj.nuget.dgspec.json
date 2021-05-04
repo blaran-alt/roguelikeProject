@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\hugod\\source\\repos\\roguelikeProject\\Projet\\Projet.csproj": {}
+    "C:\\Users\\hugod\\Source\\Repos\\roguelikeProject\\Projet\\Projet.csproj": {}
   },
   "projects": {
-    "C:\\Users\\hugod\\source\\repos\\roguelikeProject\\Projet\\Projet.csproj": {
+    "C:\\Users\\hugod\\Source\\Repos\\roguelikeProject\\Projet\\Projet.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\hugod\\source\\repos\\roguelikeProject\\Projet\\Projet.csproj",
+        "projectUniqueName": "C:\\Users\\hugod\\Source\\Repos\\roguelikeProject\\Projet\\Projet.csproj",
         "projectName": "Projet",
-        "projectPath": "C:\\Users\\hugod\\source\\repos\\roguelikeProject\\Projet\\Projet.csproj",
+        "projectPath": "C:\\Users\\hugod\\Source\\Repos\\roguelikeProject\\Projet\\Projet.csproj",
         "packagesPath": "C:\\Users\\hugod\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\hugod\\source\\repos\\roguelikeProject\\Projet\\obj\\",
+        "outputPath": "C:\\Users\\hugod\\Source\\Repos\\roguelikeProject\\Projet\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\hugod\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -38,13 +38,25 @@
       "frameworks": {
         "net461": {
           "dependencies": {
+            "LibNoise": {
+              "target": "Package",
+              "version": "[0.2.0, )"
+            },
             "RLNET": {
               "target": "Package",
               "version": "[1.0.6, )"
             },
+            "RandomAccessPerlinNoise": {
+              "target": "Package",
+              "version": "[1.0.1, )"
+            },
             "RogueSharp": {
               "target": "Package",
               "version": "[4.2.0, )"
+            },
+            "SimplexNoise": {
+              "target": "Package",
+              "version": "[2.0.0, )"
             }
           },
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.402\\RuntimeIdentifierGraph.json"

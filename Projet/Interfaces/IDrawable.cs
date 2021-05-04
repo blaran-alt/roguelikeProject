@@ -12,6 +12,6 @@ namespace Projet.Interfaces
         int Y { get; set; }
         Point Coord { get; set; }
 
-        void Draw(RLConsole console, IMap map);
+        void Draw(RLConsole console, IMap map, bool animation);
     }
 }

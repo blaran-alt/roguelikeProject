@@ -12,7 +12,7 @@ namespace Projet.Systems
     public class MessageLog
     {
         // Define the maximum number of lines to store
-        private static readonly int _maxLines = 9;
+        private static readonly int _maxLines = 6;
 
         // Use a Queue to keep track of the lines of text
         // The first line added to the log will also be the first removed

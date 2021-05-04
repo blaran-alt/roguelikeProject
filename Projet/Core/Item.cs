@@ -9,7 +9,7 @@ using RogueSharp;
 
 namespace Projet.Core
 {
-    public class Item : IItem, IDrawable
+    public abstract class Item : IItem, IDrawable
     {
         // IItem
         public string Name { get; set; }
@@ -34,7 +34,7 @@ namespace Projet.Core
                 Y = value.Y;
             }
         }
-        public void Draw(RLConsole console, IMap map)
+        public void Draw(RLConsole console, IMap map, bool animation)
         {
             if (map.IsInFov(X, Y))
             {

@@ -1,12 +1,18 @@
 {
   "version": 2,
-  "dgSpecHash": "pH1Fg2Vb05mXfgmsB8IMjXQx+POIFKCtZZR7FDs7mpVIPQq3jVNVxm1/nywUSUSIHkPkW4JA/cUTeNKov+2diQ==",
+  "dgSpecHash": "AOrXx2pglUzSWnMLpbF7RDeFp6+ZsLRBLSMvi6eJH54Ja1TPjyhqKsYkdc2yIjip9rzf4U03ylRUEu3nFX2DIw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\hugod\\source\\repos\\roguelikeProject\\Projet\\Projet.csproj",
+  "projectFilePath": "C:\\Users\\hugod\\Source\\Repos\\roguelikeProject\\Projet\\Projet.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\hugod\\.nuget\\packages\\libnoise\\0.2.0\\libnoise.0.2.0.nupkg.sha512",
+    "C:\\Users\\hugod\\.nuget\\packages\\microsoft.dotnet.analyzers.compatibility\\0.2.12-alpha\\microsoft.dotnet.analyzers.compatibility.0.2.12-alpha.nupkg.sha512",
+    "C:\\Users\\hugod\\.nuget\\packages\\murmurhashalgorithm\\1.0.2\\murmurhashalgorithm.1.0.2.nupkg.sha512",
     "C:\\Users\\hugod\\.nuget\\packages\\opentk\\1.1.1589.5942\\opentk.1.1.1589.5942.nupkg.sha512",
+    "C:\\Users\\hugod\\.nuget\\packages\\randomaccessperlinnoise\\1.0.1\\randomaccessperlinnoise.1.0.1.nupkg.sha512",
+    "C:\\Users\\hugod\\.nuget\\packages\\randomimpls\\1.0.3\\randomimpls.1.0.3.nupkg.sha512",
     "C:\\Users\\hugod\\.nuget\\packages\\rlnet\\1.0.6\\rlnet.1.0.6.nupkg.sha512",
-    "C:\\Users\\hugod\\.nuget\\packages\\roguesharp\\4.2.0\\roguesharp.4.2.0.nupkg.sha512"
+    "C:\\Users\\hugod\\.nuget\\packages\\roguesharp\\4.2.0\\roguesharp.4.2.0.nupkg.sha512",
+    "C:\\Users\\hugod\\.nuget\\packages\\simplexnoise\\2.0.0\\simplexnoise.2.0.0.nupkg.sha512"
   ],
   "logs": []
 }

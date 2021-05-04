@@ -12,14 +12,15 @@ namespace Projet.Systems
 {
     public class MapGenerator
     {
-        private readonly int _width;
-        private readonly int _height;
-        private readonly int _maxRooms;
-        private readonly int _roomMaxSize;
-        private readonly int _roomMinSize;
-        private readonly string[] _existingItems;
+        protected readonly int _width;
+        protected readonly int _height;
+        protected readonly int _maxRooms;
+        protected readonly int _roomMaxSize;
+        protected readonly int _roomMinSize;
+        protected readonly string[] _existingItems;
+        protected readonly int _mapLevel;
 
-        private readonly GameMap _map;
+        protected readonly GameMap _map;
 
         // Constructing a new MapGenerator requires the dimensions of the maps it will create
         public MapGenerator(int width, int height, int maxRooms, int roomMaxSize, int roomMinSize, int mapLevel)
@@ -31,13 +32,14 @@ namespace Projet.Systems
             _roomMinSize = roomMinSize;
             _map = new GameMap();
             _existingItems = new string[] { "Potion", "Gold" };
+            _mapLevel = mapLevel;
         }
 
         // Generate a new map that is a simple open floor with walls around the outside
-        public GameMap CreateMap()
+        public virtual GameMap CreateMap(int seed)
         {
             // Initialize every cell in the map by
-            // setting walkable, transparency, and explored to true
+            // setting walkable, transparency, and explored to false
             _map.Initialize(_width, _height);
 
             for (int i = 0; i < _maxRooms; i++)
@@ -45,8 +47,8 @@ namespace Projet.Systems
                 // Determine the size and position of the room randomly
                 int roomWidth = Game.Random.Next(_roomMinSize, _roomMaxSize);
                 int roomHeight = Game.Random.Next(_roomMinSize, _roomMaxSize);
-                int roomXPosition = Game.Random.Next(0, _width - roomWidth - 1);
-                int roomYPosition = Game.Random.Next(0, _height - roomHeight - 1);
+                int roomXPosition = Game.Random.Next(0, _width - roomWidth - 2);
+                int roomYPosition = Game.Random.Next(0, _height - roomHeight - 2);
 
                 // All of our rooms can be represented as Rectangles
                 var newRoom = new Rectangle(roomXPosition, roomYPosition,
@@ -68,16 +70,44 @@ namespace Projet.Systems
                 int previousRoomCenterY = _map.Rooms[r - 1].Center.Y;
                 int currentRoomCenterX = _map.Rooms[r].Center.X;
                 int currentRoomCenterY = _map.Rooms[r].Center.Y;
-
-                if (Game.Random.Next(1, 2) == 1)
+                if (_mapLevel == 0)
                 {
-                    CreateHorizontalTunnel(previousRoomCenterX, currentRoomCenterX, previousRoomCenterY);
-                    CreateVerticalTunnel(previousRoomCenterY, currentRoomCenterY, currentRoomCenterX);
+                    CreateTunnel(_map.Rooms[r-1], _map.Rooms[r]);
                 }
                 else
                 {
-                    CreateVerticalTunnel(previousRoomCenterY, currentRoomCenterY, previousRoomCenterX);
-                    CreateHorizontalTunnel(previousRoomCenterX, currentRoomCenterX, currentRoomCenterY);
+                    if (Game.Random.Next(1, 2) == 0)
+                    {
+                        CreateHorizontalTunnel(previousRoomCenterX, currentRoomCenterX, previousRoomCenterY);
+                        CreateVerticalTunnel(previousRoomCenterY, currentRoomCenterY, currentRoomCenterX);
+                        if (Game.Random.Next(1,2) == 1)
+                        {
+                            IEnumerable<Rectangle> connectRooms = _map.Rooms.Where(room => !room.Equals(_map.Rooms[r]) && !room.Equals(_map.Rooms[r - 1]));
+                            if (connectRooms.Count() > 0)
+                            {
+                                Rectangle connectRoom = connectRooms.ElementAt(Game.Random.Next(0, connectRooms.Count() - 1));
+                                int x = (previousRoomCenterX + currentRoomCenterX) / 2;
+                                CreateVerticalTunnel(previousRoomCenterY, connectRoom.Center.Y, x);
+                                CreateHorizontalTunnel(x, connectRoom.Center.X, connectRoom.Center.Y);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        CreateVerticalTunnel(previousRoomCenterY, currentRoomCenterY, previousRoomCenterX);
+                        CreateHorizontalTunnel(previousRoomCenterX, currentRoomCenterX, currentRoomCenterY);
+                        if (Game.Random.Next(1, 2) == 1)
+                        {
+                            IEnumerable<Rectangle> connectRooms = _map.Rooms.Where(room => !room.Equals(_map.Rooms[r]) && !room.Equals(_map.Rooms[r - 1]));
+                            if (connectRooms.Count() > 0)
+                            {
+                                Rectangle connectRoom = connectRooms.ElementAt(Game.Random.Next(0, connectRooms.Count() - 1));
+                                int y = (previousRoomCenterY + currentRoomCenterY) / 2;
+                                CreateHorizontalTunnel(previousRoomCenterX, connectRoom.Center.X, y);
+                                CreateVerticalTunnel(y, connectRoom.Center.Y, connectRoom.Center.X);
+                            }
+                        }
+                    }
                 }
             }
 
@@ -92,6 +122,13 @@ namespace Projet.Systems
             PlacePlayer();
             PlaceMonsters();
             PlaceItems();
+
+            Box box = new Box();
+            box.X = _map.Rooms[0].Center.X + 1;
+            box.Y = _map.Rooms[0].Center.Y + 1;
+
+            _map.AddBox(box);
+
 
             return _map;
         }
@@ -122,6 +159,96 @@ namespace Projet.Systems
             for (int y = Math.Min(yStart, yEnd); y <= Math.Max(yStart, yEnd); y++)
             {
                 _map.SetCellProperties(xPosition, y, true, true);
+            }
+        }
+
+        private void CreateTunnel(int xStart,int yStart, int xEnd, int yEnd)
+        {
+            Point distance = new Point(Math.Abs(xEnd - xStart), Math.Abs(yEnd - yStart));
+            Point direction = new Point(Math.Sign(xEnd - xStart), Math.Sign(yEnd - yStart));
+            int i = 0;
+            while (i <= distance.X && i <= distance.Y)
+            {
+                _map.SetCellProperties(xStart + i * direction.X, yStart + i * direction.Y, true, true);
+                if (distance.X >= distance.Y)
+                {
+                    _map.SetCellProperties(xStart + (i + 1) * direction.X, yStart + i * direction.Y, true, true);
+                }
+                else
+                {
+                    _map.SetCellProperties(xStart + i * direction.X, yStart + (i + 1) * direction.Y, true, true);
+                }
+                i++;
+            }
+            if (i < distance.X)
+            {
+                CreateHorizontalTunnel(xStart + i * direction.X, xEnd, yEnd);
+            }
+            else
+            {
+                CreateVerticalTunnel(yStart + i * direction.Y, yEnd, xEnd);
+            }
+        }
+
+        private void CreateTunnel(Rectangle startRoom, Rectangle endRoom)
+        {
+            Point direction = new Point(Math.Sign(endRoom.Center.X - startRoom.Center.X), Math.Sign(endRoom.Center.Y - startRoom.Center.Y));
+            Console.WriteLine(direction);
+            Point distance = new Point(Math.Abs(endRoom.Center.X - startRoom.Center.X), Math.Abs(endRoom.Center.Y - startRoom.Center.Y));
+            int xEnd;
+            int xStart;
+            int yEnd;
+            int yStart;
+            if(distance.X >= distance.Y)
+            {
+                xEnd = endRoom.Center.X - direction.X * endRoom.Width / 2;
+                xStart = startRoom.Center.X + direction.X * startRoom.Width / 2;
+                yEnd = endRoom.Center.Y;
+                yStart = startRoom.Center.Y;
+            }
+            else
+            {
+                xEnd = endRoom.Center.X;
+                xStart = startRoom.Center.X;
+                yEnd = endRoom.Center.Y - direction.Y * endRoom.Height / 2;
+                yStart = startRoom.Center.Y + direction.Y * startRoom.Height / 2;
+            }
+            distance = new Point(Math.Abs(xEnd - xStart),Math.Abs(yEnd - yStart));
+            //int step = (int)Math.Floor((double)distance.Y/distance.X);
+            //int remainder = distance.Y - step * (distance.X);
+            //Console.WriteLine($"Room ({xStart},{yStart}) to room ({xEnd},{yEnd}) => step = {step} and remainder = {remainder}");
+            int i = 0;
+            bool connectTunnel = true;
+            while(i <= distance.X && i <= distance.Y)
+            {
+                _map.SetCellProperties(xStart + i * direction.X, yStart + i * direction.Y, true, true);
+                if(distance.X >= distance.Y)
+                {
+                    _map.SetCellProperties(xStart + (i + 1) * direction.X, yStart + i * direction.Y, true, true);
+                }
+                else
+                {
+                    _map.SetCellProperties(xStart + i * direction.X, yStart + (i + 1) * direction.Y, true, true);
+                }
+                if(connectTunnel && Game.Random.Next(1,3) == 1)
+                {
+                    IEnumerable<Rectangle> connectRooms = _map.Rooms.Where(room => !room.Equals(endRoom) && !room.Equals(startRoom));
+                    if(connectRooms.Count() > 0)
+                    {
+                        Rectangle connectRoom = connectRooms.ElementAt(Game.Random.Next(0, connectRooms.Count() - 1));
+                        CreateTunnel(xStart + i * direction.X, yStart + i * direction.Y, connectRoom.Center.X, connectRoom.Center.Y);
+                    }
+                    connectTunnel = false;
+                }
+                i++;
+            }
+            if(i < distance.X)
+            {
+                CreateHorizontalTunnel(xStart + i * direction.X, xEnd, yEnd);
+            }
+            else
+            {
+                CreateVerticalTunnel(yStart + i * direction.Y, yEnd, xEnd);
             }
         }
 

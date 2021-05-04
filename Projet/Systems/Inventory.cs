@@ -34,18 +34,18 @@ namespace Projet.Systems
 
         public void AlternateDraw(RLConsole inventoryConsole, RLConsole mapConsole)
         {
-            inventoryConsole.Print(25, 3, "Keys", Colors.Text);
-            int j = 5;
+            inventoryConsole.Print(Game.GetPropostionnalSize(25), Game.GetPropostionnalSize(3), "Keys", Colors.Text);
+            int j = Game.GetPropostionnalSize(3) + 2;
             foreach (Item item in Items)
             {
                 if(item.Name == "Key")
                 {
-                    item.AlternateDrawInContainer(inventoryConsole, 25, j);
-                    j += 2;
+                    item.AlternateDrawInContainer(inventoryConsole, Game.GetPropostionnalSize(25), j);
+                    j++;
                 }
             }
 
-            inventoryConsole.Print(48, 3, "Potions", Colors.Text);
+            inventoryConsole.Print(Game.GetPropostionnalSize(48), Game.GetPropostionnalSize(3), "Potions", Colors.Text);
             CellSelection.CreateRoomWalls(50, 5, 3, 3, 186, 205, 201, 187, 200, 188, inventoryConsole);
 
             if(Potions.Count() > 0)

@@ -47,6 +47,13 @@ namespace Projet.Systems
                     }
             }
 
+            Box box = Game.Map.GetBoxAt(x, y);
+            if(box != null)
+            {
+                Point _direction = new Point(x, y) - Game.Player.Coord;
+                Game.Map.SetActorPosition(box, x + _direction.X, y + _direction.Y);
+            }
+
             if (Game.Map.SetActorPosition(Game.Player, x, y))
             {
                 Item item = Game.Map.GetItemAt(x, y);

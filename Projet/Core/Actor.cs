@@ -5,7 +5,7 @@ using Projet.Interfaces;
 
 namespace Projet.Core
 {
-    public class Actor : IActor, IDrawable, IScheduleable
+    public abstract class Actor : IActor, IDrawable, IScheduleable
     {
         // IScheduleable
         public int Time { get { return Speed; } }
@@ -160,7 +160,7 @@ namespace Projet.Core
             }
         }
 
-        public void Draw(RLConsole console, IMap map)
+        public virtual void Draw(RLConsole console, IMap map, bool animation)
         {
             // Don't draw actors in cells that haven't been explored
             if (!map.GetCell(X, Y).IsExplored)

@@ -37,7 +37,7 @@ namespace Projet.Items
             GameMap map = Game.Map;
             if (EffectCode == 0)
             {
-                player.Health = Math.Max(player.Health + 10, player.MaxHealth);
+                player.Health = Math.Min(player.Health + 10, player.MaxHealth);
                 Game.MessageLog.Add($"{player.Name} used a health potion and regained 10 hp");
                 return true;
             }
@@ -57,7 +57,7 @@ namespace Projet.Items
                     foreach (ICell cell in surroundingCells)
                     {
                         Monster monster = map.GetMonsterAt(cell.X, cell.Y);
-                        if (monster != null)
+                        if (monster != null && Game.Map.IsInFov(cell.X, cell.Y))
                         {
                             Game.CommandSystem.ResolveDamage(monster, 3);
                         }
@@ -70,6 +70,8 @@ namespace Projet.Items
 
         public override void AlternateDrawInContainer(RLConsole console, int x, int y)
         {
+            x = Game.GetPropostionnalSize(x);
+            y = Game.GetPropostionnalSize(y);
             console.Set(x, y, Color, null, Symbol);
             console.Print(x + 3, y, _effect, Colors.Text, Colors.ComplimentDarkest);
             console.Print(x + 2, y + 1, Quantity.ToString(), Colors.Text, Colors.ComplimentDarkest);

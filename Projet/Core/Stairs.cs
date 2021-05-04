@@ -44,7 +44,7 @@ namespace Projet.Core
             get; set;
         }
 
-        public void Draw(RLConsole console, IMap map)
+        public void Draw(RLConsole console, IMap map, bool animation)
         {
             if (!map.GetCell(X, Y).IsExplored)
             {
