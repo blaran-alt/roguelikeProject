@@ -1,1 +1,76 @@
-{"Format":1,"ProjectReferences":[],"MetadataReferences":[{"FilePath":"/Users/DraxMoon/.nuget/packages/libnoise/0.2.0/lib/NET45/LibNoise.dll","Aliases":[],"Framework":null},{"FilePath":"/Library/Frameworks/Mono.framework/Versions/6.12.0/lib/mono/4.6.1-api/mscorlib.dll","Aliases":[],"Framework":null},{"FilePath":"/Users/DraxMoon/.nuget/packages/murmurhashalgorithm/1.0.2/lib/net35/MurMurHashAlgorithm.dll","Aliases":[],"Framework":null},{"FilePath":"/Users/DraxMoon/.nuget/packages/opentk/1.1.1589.5942/lib/NET40/OpenTK.dll","Aliases":[],"Framework":null},{"FilePath":"/Users/DraxMoon/.nuget/packages/randomaccessperlinnoise/1.0.1/lib/net46/RandomAccessPerlinNoise.dll","Aliases":[],"Framework":null},{"FilePath":"/Users/DraxMoon/.nuget/packages/randomimpls/1.0.3/lib/net35/RandomImpls.dll","Aliases":[],"Framework":null},{"FilePath":"/Users/DraxMoon/.nuget/packages/rlnet/1.0.6/lib/RLNET.dll","Aliases":[],"Framework":null},{"FilePath":"/Users/DraxMoon/.nuget/packages/roguesharp/4.2.0/lib/net40/RogueSharp.dll","Aliases":[],"Framework":null},{"FilePath":"/Users/DraxMoon/.nuget/packages/simplexnoise/2.0.0/lib/net45/SimplexNoise.dll","Aliases":[],"Framework":null},{"FilePath":"/Library/Frameworks/Mono.framework/Versions/6.12.0/lib/mono/4.6.1-api/System.Core.dll","Aliases":[],"Framework":null},{"FilePath":"/Library/Frameworks/Mono.framework/Versions/6.12.0/lib/mono/4.6.1-api/System.Data.dll","Aliases":[],"Framework":null},{"FilePath":"/Library/Frameworks/Mono.framework/Versions/6.12.0/lib/mono/4.6.1-api/System.dll","Aliases":[],"Framework":null},{"FilePath":"/Library/Frameworks/Mono.framework/Versions/6.12.0/lib/mono/4.6.1-api/System.Drawing.dll","Aliases":[],"Framework":null},{"FilePath":"/Library/Frameworks/Mono.framework/Versions/6.12.0/lib/mono/4.6.1-api/System.IO.Compression.FileSystem.dll","Aliases":[],"Framework":null},{"FilePath":"/Library/Frameworks/Mono.framework/Versions/6.12.0/lib/mono/4.6.1-api/System.Numerics.dll","Aliases":[],"Framework":null},{"FilePath":"/Library/Frameworks/Mono.framework/Versions/6.12.0/lib/mono/4.6.1-api/System.Runtime.Serialization.dll","Aliases":[],"Framework":null},{"FilePath":"/Library/Frameworks/Mono.framework/Versions/6.12.0/lib/mono/4.6.1-api/System.Xml.dll","Aliases":[],"Framework":null},{"FilePath":"/Library/Frameworks/Mono.framework/Versions/6.12.0/lib/mono/4.6.1-api/System.Xml.Linq.dll","Aliases":[],"Framework":null}],"Files":["/Users/DraxMoon/Downloads/Projet/Projet/Behaviors/MoveAndDistanceAttack.cs","/Users/DraxMoon/Downloads/Projet/Projet/Behaviors/StandardMoveAndAttack.cs","/Users/DraxMoon/Downloads/Projet/Projet/Core/Actor.cs","/Users/DraxMoon/Downloads/Projet/Projet/Core/Box.cs","/Users/DraxMoon/Downloads/Projet/Projet/Core/Colors.cs","/Users/DraxMoon/Downloads/Projet/Projet/Core/CortexMap.cs","/Users/DraxMoon/Downloads/Projet/Projet/Core/Door.cs","/Users/DraxMoon/Downloads/Projet/Projet/Core/GameMap.cs","/Users/DraxMoon/Downloads/Projet/Projet/Core/Item.cs","/Users/DraxMoon/Downloads/Projet/Projet/Core/Monster.cs","/Users/DraxMoon/Downloads/Projet/Projet/Core/Object.cs","/Users/DraxMoon/Downloads/Projet/Projet/Core/Player.cs","/Users/DraxMoon/Downloads/Projet/Projet/Core/Stairs.cs","/Users/DraxMoon/Downloads/Projet/Projet/Core/Terminal.cs","/Users/DraxMoon/Downloads/Projet/Projet/Game.cs","/Users/DraxMoon/Downloads/Projet/Projet/Interfaces/IActor.cs","/Users/DraxMoon/Downloads/Projet/Projet/Interfaces/IBehavior.cs","/Users/DraxMoon/Downloads/Projet/Projet/Interfaces/IContainer.cs","/Users/DraxMoon/Downloads/Projet/Projet/Interfaces/IDrawable.cs","/Users/DraxMoon/Downloads/Projet/Projet/Interfaces/IItem.cs","/Users/DraxMoon/Downloads/Projet/Projet/Interfaces/IScheduleable.cs","/Users/DraxMoon/Downloads/Projet/Projet/Items/Gold.cs","/Users/DraxMoon/Downloads/Projet/Projet/Items/Key.cs","/Users/DraxMoon/Downloads/Projet/Projet/Items/Potion.cs","/Users/DraxMoon/Downloads/Projet/Projet/Monsters/Bodybuilder.cs","/Users/DraxMoon/Downloads/Projet/Projet/Monsters/Coquard.cs","/Users/DraxMoon/Downloads/Projet/Projet/Monsters/Coupeur.cs","/Users/DraxMoon/Downloads/Projet/Projet/Systems/CellSelection.cs","/Users/DraxMoon/Downloads/Projet/Projet/Systems/CommandSystem.cs","/Users/DraxMoon/Downloads/Projet/Projet/Systems/Connection.cs","/Users/DraxMoon/Downloads/Projet/Projet/Systems/CortexGenerator.cs","/Users/DraxMoon/Downloads/Projet/Projet/Systems/GameConsole.cs","/Users/DraxMoon/Downloads/Projet/Projet/Systems/Inventory.cs","/Users/DraxMoon/Downloads/Projet/Projet/Systems/MapGenerator.cs","/Users/DraxMoon/Downloads/Projet/Projet/Systems/MessageLog.cs","/Users/DraxMoon/Downloads/Projet/Projet/Systems/NeuronGeneration.cs","/Users/DraxMoon/Downloads/Projet/Projet/Systems/PerlinNoise.cs","/Users/DraxMoon/Downloads/Projet/Projet/Systems/Save.cs","/Users/DraxMoon/Downloads/Projet/Projet/Systems/SchedulingSystem.cs","/Users/DraxMoon/Downloads/Projet/Projet/Systems/Shop.cs","/Users/DraxMoon/Downloads/Projet/Projet/Systems/Story.cs","/Users/DraxMoon/Downloads/Projet/Projet/Systems/UISelection.cs","/Users/DraxMoon/Downloads/Projet/Projet/UI/Button.cs","/Users/DraxMoon/Downloads/Projet/Projet/UI/ChoseLevel.cs","/Users/DraxMoon/Downloads/Projet/Projet/UI/ChoseSeedMenu.cs","/Users/DraxMoon/Downloads/Projet/Projet/UI/MainMenu.cs","/Users/DraxMoon/Downloads/Projet/Projet/UI/Menu.cs","/Users/DraxMoon/Downloads/Projet/Projet/UI/MenuEventArgs.cs","/Users/DraxMoon/Downloads/Projet/Projet/UI/TextArea.cs","/Users/DraxMoon/Downloads/Projet/Projet/UI/Toggle.cs","/Users/DraxMoon/Downloads/Projet/Projet/.DS_Store","/Users/DraxMoon/Downloads/Projet/Projet/ascii_8x8.png","/Users/DraxMoon/Downloads/Projet/Projet/ExtendTest.png","/Users/DraxMoon/Downloads/Projet/Projet/ExtendTestBis.png","/Users/DraxMoon/Downloads/Projet/Projet/GraphicTest.png","/Users/DraxMoon/Downloads/Projet/Projet/obj/Debug/net461/Projet.AssemblyInfo.cs","/Users/DraxMoon/Downloads/Projet/Projet/obj/Debug/net461/Projet.AssemblyInfo.cs"],"BuildActions":["Compile","Compile","Compile","Compile","Compile","Compile","Compile","Compile","Compile","Compile","Compile","Compile","Compile","Compile","Compile","Compile","Compile","Compile","Compile","Compile","Compile","Compile","Compile","Compile","Compile","Compile","Compile","Compile","Compile","Compile","Compile","Compile","Compile","Compile","Compile","Compile","Compile","Compile","Compile","Compile","Compile","Compile","Compile","Compile","Compile","Compile","Compile","Compile","Compile","Compile","None","Content","Content","Content","Content","Compile","Compile"],"Analyzers":["/Users/DraxMoon/.nuget/packages/microsoft.dotnet.analyzers.compatibility/0.2.12-alpha/analyzers/dotnet/cs/Microsoft.DotNet.Analyzers.Compatibility.dll","/Users/DraxMoon/.nuget/packages/microsoft.dotnet.analyzers.compatibility/0.2.12-alpha/analyzers/dotnet/cs/Microsoft.DotNet.Csv.dll"],"AdditionalFiles":[],"EditorConfigFiles":[]}
+{
+  "Format": 1,
+  "ProjectReferences": [],
+  "MetadataReferences": [
+    {
+      "FilePath": "/Library/Frameworks/Mono.framework/Versions/6.12.0/lib/mono/4.6.1-api/mscorlib.dll",
+      "Aliases": [],
+      "Framework": null
+    },
+    {
+      "FilePath": "/Users/DraxMoon/.nuget/packages/opentk/1.1.1589.5942/lib/NET40/OpenTK.dll",
+      "Aliases": [],
+      "Framework": null
+    },
+    {
+      "FilePath": "/Users/DraxMoon/.nuget/packages/rlnet/1.0.6/lib/RLNET.dll",
+      "Aliases": [],
+      "Framework": null
+    },
+    {
+      "FilePath": "/Users/DraxMoon/.nuget/packages/roguesharp/4.2.0/lib/net40/RogueSharp.dll",
+      "Aliases": [],
+      "Framework": null
+    },
+    {
+      "FilePath": "/Library/Frameworks/Mono.framework/Versions/6.12.0/lib/mono/4.6.1-api/System.Core.dll",
+      "Aliases": [],
+      "Framework": null
+    },
+    {
+      "FilePath": "/Library/Frameworks/Mono.framework/Versions/6.12.0/lib/mono/4.6.1-api/System.Data.dll",
+      "Aliases": [],
+      "Framework": null
+    },
+    {
+      "FilePath": "/Library/Frameworks/Mono.framework/Versions/6.12.0/lib/mono/4.6.1-api/System.dll",
+      "Aliases": [],
+      "Framework": null
+    },
+    {
+      "FilePath": "/Library/Frameworks/Mono.framework/Versions/6.12.0/lib/mono/4.6.1-api/System.Drawing.dll",
+      "Aliases": [],
+      "Framework": null
+    },
+    {
+      "FilePath": "/Library/Frameworks/Mono.framework/Versions/6.12.0/lib/mono/4.6.1-api/System.IO.Compression.FileSystem.dll",
+      "Aliases": [],
+      "Framework": null
+    },
+    {
+      "FilePath": "/Library/Frameworks/Mono.framework/Versions/6.12.0/lib/mono/4.6.1-api/System.Numerics.dll",
+      "Aliases": [],
+      "Framework": null
+    },
+    {
+      "FilePath": "/Library/Frameworks/Mono.framework/Versions/6.12.0/lib/mono/4.6.1-api/System.Runtime.Serialization.dll",
+      "Aliases": [],
+      "Framework": null
+    },
+    {
+      "FilePath": "/Library/Frameworks/Mono.framework/Versions/6.12.0/lib/mono/4.6.1-api/System.Xml.dll",
+      "Aliases": [],
+      "Framework": null
+    },
+    {
+      "FilePath": "/Library/Frameworks/Mono.framework/Versions/6.12.0/lib/mono/4.6.1-api/System.Xml.Linq.dll",
+      "Aliases": [],
+      "Framework": null
+    }
+  ],
+  "Files": [ "/Users/DraxMoon/Downloads/Projet/Projet/Behaviors/StandardMoveAndAttack.cs", "/Users/DraxMoon/Downloads/Projet/Projet/Core/Actor.cs", "/Users/DraxMoon/Downloads/Projet/Projet/Core/Colors.cs", "/Users/DraxMoon/Downloads/Projet/Projet/Core/Door.cs", "/Users/DraxMoon/Downloads/Projet/Projet/Core/GameMap.cs", "/Users/DraxMoon/Downloads/Projet/Projet/Core/Item.cs", "/Users/DraxMoon/Downloads/Projet/Projet/Core/Monster.cs", "/Users/DraxMoon/Downloads/Projet/Projet/Core/Player.cs", "/Users/DraxMoon/Downloads/Projet/Projet/Core/Stairs.cs", "/Users/DraxMoon/Downloads/Projet/Projet/Game.cs", "/Users/DraxMoon/Downloads/Projet/Projet/Interfaces/IActor.cs", "/Users/DraxMoon/Downloads/Projet/Projet/Interfaces/IBehavior.cs", "/Users/DraxMoon/Downloads/Projet/Projet/Interfaces/IContainer.cs", "/Users/DraxMoon/Downloads/Projet/Projet/Interfaces/IDrawable.cs", "/Users/DraxMoon/Downloads/Projet/Projet/Interfaces/IItem.cs", "/Users/DraxMoon/Downloads/Projet/Projet/Interfaces/IScheduleable.cs", "/Users/DraxMoon/Downloads/Projet/Projet/Items/Gold.cs", "/Users/DraxMoon/Downloads/Projet/Projet/Items/Key.cs", "/Users/DraxMoon/Downloads/Projet/Projet/Items/Potion.cs", "/Users/DraxMoon/Downloads/Projet/Projet/Monsters/Kobold.cs", "/Users/DraxMoon/Downloads/Projet/Projet/Systems/CommandSystem.cs", "/Users/DraxMoon/Downloads/Projet/Projet/Systems/Inventory.cs", "/Users/DraxMoon/Downloads/Projet/Projet/Systems/MapGenerator.cs", "/Users/DraxMoon/Downloads/Projet/Projet/Systems/MessageLog.cs", "/Users/DraxMoon/Downloads/Projet/Projet/Systems/SchedulingSystem.cs", "/Users/DraxMoon/Downloads/Projet/Projet/Systems/Selection.cs", "/Users/DraxMoon/Downloads/Projet/Projet/ascii_8x8.png", "/Users/DraxMoon/Downloads/Projet/Projet/obj/Debug/net461/Projet.AssemblyInfo.cs", "/Users/DraxMoon/Downloads/Projet/Projet/obj/Debug/net461/Projet.AssemblyInfo.cs" ],
+  "BuildActions": [ "Compile", "Compile", "Compile", "Compile", "Compile", "Compile", "Compile", "Compile", "Compile", "Compile", "Compile", "Compile", "Compile", "Compile", "Compile", "Compile", "Compile", "Compile", "Compile", "Compile", "Compile", "Compile", "Compile", "Compile", "Compile", "Compile", "Content", "Compile", "Compile" ],
+  "Analyzers": [],
+  "AdditionalFiles": [],
+  "EditorConfigFiles": []
+}

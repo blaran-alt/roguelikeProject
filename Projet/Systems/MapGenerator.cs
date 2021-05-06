@@ -282,7 +282,7 @@ namespace Projet.Systems
                         if (randomRoomLocation != Point.Zero)
                         {
                             // Create a monster
-                            var monster = Kobold.Create(Game.Level);
+                            var monster = Coupeur.Create(Game.Level);
                             monster.Coord = randomRoomLocation;
                             _map.AddMonster(monster);
                         }
