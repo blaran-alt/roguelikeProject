@@ -13,7 +13,7 @@ namespace Projet.UI
     {
         private Save _save;
 
-        public ChoseLevel(int width, int height, Save save) : base(new List<Button>(), "Chose level", width, height)
+        public ChoseLevel(int width, int height, Save save) : base(new List<Button>(), "Choisis un niveau", width, height)
         {
             _save = save;
 

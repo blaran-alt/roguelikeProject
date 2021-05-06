@@ -9,12 +9,12 @@ using RLNET;
 
 namespace Projet.Monsters
 {
-    public class Kobold : Monster
+    public class Coupeur : Monster
     {
-        public static Kobold Create(int level)
+        public static Coupeur Create(int level)
         {
             int health = Dice.Roll("2D5");
-            return new Kobold
+            return new Coupeur
             {
                 Attack = Dice.Roll("1D3") + level / 3,
                 AttackChance = Dice.Roll("25D3"),
@@ -25,7 +25,7 @@ namespace Projet.Monsters
                 Gold = Dice.Roll("5D5"),
                 Health = health,
                 MaxHealth = 10,
-                Name = "Kobold",
+                Name = "Coupeur",
                 Speed = 14,
                 Symbols = new int[] { 256, 256, 256, 257}
             };

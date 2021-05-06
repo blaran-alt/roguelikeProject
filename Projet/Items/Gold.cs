@@ -12,7 +12,7 @@ namespace Projet.Items
     {
         public Gold(int quantity, bool dropped, int x, int y)
         {
-            Name = "Gold";
+            Name = "Or";
             EffectCode = -1;
             Dropped = dropped;
             Quantity = quantity;

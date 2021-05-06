@@ -13,7 +13,7 @@ namespace Projet.Items
     public class Potion : Item
     {
         private readonly string _effect;
-        private readonly string[] _effects = new string[] { "Health", "Speed", "Damage" };
+        private readonly string[] _effects = new string[] { "Sante", "Vitesse", "Degats" };
 
         private readonly RLColor[] colors = new RLColor[] {Colors.ComplimentLightest, Colors.AlternateDarkest, Colors.ComplimentDarkest};
         public Potion(bool dropped, int x, int y, int effectCode)
@@ -38,18 +38,18 @@ namespace Projet.Items
             if (EffectCode == 0)
             {
                 player.Health = Math.Min(player.Health + 10, player.MaxHealth);
-                Game.MessageLog.Add($"{player.Name} used a health potion and regained 10 hp");
+                Game.MessageLog.Add($"{player.Name} a utilise une potion de sante et gagne 10 hp");
                 return true;
             }
             else if(EffectCode == 1)
             {
                 player.Speed = 5;
-                Game.MessageLog.Add($"{player.Name} used a speed potion and doubled their speed for 5 turns");
+                Game.MessageLog.Add($"{player.Name} a utilise une potion de vitesse et double sa vitesse pour 5 tours");
                 return true;
             }
             else if(EffectCode == 2)
             {
-                Game.MessageLog.Add($"{player.Name} used a damage potion");
+                Game.MessageLog.Add($"{player.Name} a utilise une potion de degats");
                 CellSelection.StartShochWaveEffect(player.Coord, 5);
                 IEnumerable<ICell> surroundingCells = map.GetCellsInCircle(Game.Player.X, Game.Player.Y, 5);
                 if (surroundingCells != null)

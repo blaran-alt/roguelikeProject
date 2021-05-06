@@ -18,7 +18,7 @@ namespace Projet.Core
             Gold = 0;
             Health = 20;
             MaxHealth = 1;
-            Name = "Rogue";
+            Name = "Reanimateur";
             Speed = 10;
             Symbols = new int[] { 64, 251, 1, 2,  1, 251 };
             AnimationIndex = 0;
@@ -26,11 +26,11 @@ namespace Projet.Core
 
         public void DrawStats(RLConsole statConsole)
         {
-            statConsole.Print(1, 1, $"Name:    {Name}", Colors.Text);
-            statConsole.Print(1, 3, $"Health:  {Health}/{MaxHealth}", Colors.Text);
-            statConsole.Print(1, 5, $"Attack:  {Attack} ({AttackChance}%)", Colors.Text);
-            statConsole.Print(1, 7, $"Defense: {Defense} ({DefenseChance}%)", Colors.Text);
-            statConsole.Print(1, 9, $"Gold:    {Gold}", Colors.Gold);
+            statConsole.Print(1, 1, $"Nom:    {Name}", Colors.Text);
+            statConsole.Print(1, 3, $"Sante:  {Health}/{MaxHealth}", Colors.Text);
+            statConsole.Print(1, 5, $"Attaque:  {Attack} ({AttackChance}%)", Colors.Text);
+            statConsole.Print(1, 7, $"Defence: {Defense} ({DefenseChance}%)", Colors.Text);
+            statConsole.Print(1, 9, $"Or:    {Gold}", Colors.Gold);
         }
 
         public void Reset()

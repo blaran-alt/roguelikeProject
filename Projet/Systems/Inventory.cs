@@ -34,11 +34,11 @@ namespace Projet.Systems
 
         public void AlternateDraw(RLConsole inventoryConsole, RLConsole mapConsole)
         {
-            inventoryConsole.Print(Game.GetProportionnalHorizontalSize(25), Game.GetProportionnalHorizontalSize(3), "Keys", Colors.Text);
+            inventoryConsole.Print(Game.GetProportionnalHorizontalSize(25), Game.GetProportionnalHorizontalSize(3), "Clefs", Colors.Text);
             int j = Game.GetProportionnalHorizontalSize(3) + 2;
             foreach (Item item in Items)
             {
-                if(item.Name == "Key")
+                if(item.Name == "Clef")
                 {
                     item.AlternateDrawInContainer(inventoryConsole, Game.GetProportionnalHorizontalSize(25), j);
                     j++;

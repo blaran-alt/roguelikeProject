@@ -13,7 +13,7 @@ namespace Projet.UI
     {
         private List<Save> saves;
 
-        public ChoseSeedMenu(int width, int height) : base(new List<Button>(), "Chose Seed", width, height)
+        public ChoseSeedMenu(int width, int height) : base(new List<Button>(), "Choisis une Seed", width, height)
         {
             saves = new List<Save>();
             bool last;

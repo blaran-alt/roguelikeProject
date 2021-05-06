@@ -128,7 +128,7 @@ namespace Projet.Systems
                 for (int i = 0; i < Dice.Roll("2D3-2"); i++)
                 {
                     ICell spawnCell = spawnZone[Game.Random.Next(spawnZone.Count - 1)];
-                    var cutter = Kobold.Create(Game.Level);
+                    var cutter = Coupeur.Create(Game.Level);
                     cutter.X = spawnCell.X;
                     cutter.Y = spawnCell.Y;
                     _map.AddMonster(cutter);
@@ -137,7 +137,7 @@ namespace Projet.Systems
                 for (int i = 0; i < Dice.Roll("2D3"); i++)
                 {
                     ICell spawnCell = spawnZone[Game.Random.Next(spawnZone.Count - 1)];
-                    var cutter = Kobold.Create(Game.Level);
+                    var cutter = Coupeur.Create(Game.Level);
                     cutter.X = spawnCell.X;
                     cutter.Y = spawnCell.Y;
                     _map.AddMonster(cutter);

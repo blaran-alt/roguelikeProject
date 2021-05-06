@@ -14,7 +14,7 @@ namespace Projet.Items
 
         public Key(bool dropped, int x, int y, int effectCode)
         {
-            Name = "Key";
+            Name = "Clef";
             Quantity = 1;
             Dropped = dropped;
             X = x;

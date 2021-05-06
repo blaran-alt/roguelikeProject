@@ -1,12 +1,11 @@
 ﻿<Properties StartupConfiguration="{6906CE51-FAB3-45F7-9CE5-13F340693DA3}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Projet/Items/Potion.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Projet/Monsters/Bodybuilder.cs">
     <Files>
-      <File FileName="Projet/Game.cs" Line="1" Column="1" />
-      <File FileName="Projet/Systems/Inventory.cs" Line="1" Column="1" />
-      <File FileName="Projet/Behaviors/StandardMoveAndAttack.cs" Line="1" Column="1" />
-      <File FileName="Projet/Interfaces/IActor.cs" Line="19" Column="1" />
-      <File FileName="Projet/Interfaces/IItem.cs" Line="1" Column="1" />
-      <File FileName="Projet/Items/Potion.cs" Line="1" Column="1" />
+      <File FileName="Projet/UI/ChoseLevel.cs" Line="16" Column="106" />
+      <File FileName="Projet/Core/Box.cs" />
+      <File FileName="Projet/Systems/Save.cs" />
+      <File FileName="Projet/Monsters/Coupeur.cs" Line="1" Column="1" />
+      <File FileName="Projet/Monsters/Bodybuilder.cs" Line="1" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -16,11 +15,12 @@
               <Node name="Behaviors" expanded="True" />
               <Node name="Core" expanded="True" />
               <Node name="Interfaces" expanded="True" />
-              <Node name="Items" expanded="True">
-                <Node name="Potion.cs" selected="True" />
+              <Node name="Items" expanded="True" />
+              <Node name="Monsters" expanded="True">
+                <Node name="Bodybuilder.cs" selected="True" />
               </Node>
-              <Node name="Monsters" expanded="True" />
               <Node name="Systems" expanded="True" />
+              <Node name="UI" expanded="True" />
             </Node>
           </Node>
         </State>
