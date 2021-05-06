@@ -19,9 +19,10 @@ namespace Projet.Core
 
         // IDrawable
         public RLColor Color { get; set; }
-        public char Symbol { get; set; }
+        public int[] Symbols { get; set; }
         public int X { get; set; }
         public int Y { get; set; }
+        public int AnimationIndex { get; set; }
         public Point Coord
         {
             get
@@ -38,13 +39,13 @@ namespace Projet.Core
         {
             if (map.IsInFov(X, Y))
             {
-                console.Set(X, Y, Color, Colors.FloorBackgroundFov, Symbol);
+                console.Set(X, Y, Color, Colors.FloorBackgroundFov, Symbols[AnimationIndex]);
             }
         }
 
         public void DrawInContainer(RLConsole console, int x, int y)
         {
-            console.Set(x, y, Color, null, Symbol);
+            console.Set(x, y, Color, null, Symbols[0]);
             console.Print(x + 1, y,$" - {Quantity}", Colors.Text);
         }
 

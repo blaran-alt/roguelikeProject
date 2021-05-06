@@ -21,14 +21,14 @@ namespace Projet.Items
             Y = y;
             EffectCode = effectCode;
             Color = keyColors[effectCode];
-            Symbol = 'µ';
+            Symbols = new int[]{'µ'};
         }
         public Key(int effectCode) : this(false, 0, 0, effectCode) { }
         public Key(int effectCode, int x, int y) : this(true, x, y, effectCode) { }
 
         public override void AlternateDrawInContainer(RLConsole console, int x, int y)
         {
-            console.Set(x, y, Color, null, Symbol);
+            console.Set(x, y, Color, null, Symbols[0]);
             console.Print(x + 1, y, $" - {EffectCode}", Colors.Text);
         }
     }

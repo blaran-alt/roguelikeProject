@@ -8,15 +8,15 @@ namespace Projet.UI
 {
     public class MenuEventArgs : EventArgs
     {
-        public bool Value { get; set; }
-        public int Index { get; set; }
-        public string Name { get; set; }
+        public bool BoolValue { get; set; }
+        public int IntValue { get; set; }
+        public string StringValue { get; set; }
 
         public MenuEventArgs(bool value, int index, string name)
         {
-            Value = value;
-            Index = index;
-            Name = name;
+            BoolValue = value;
+            IntValue = index;
+            StringValue = name;
         }
         public MenuEventArgs() : this (false, 0, "") { }
         public MenuEventArgs(int index) : this(false, index, "") { }

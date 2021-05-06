@@ -58,6 +58,8 @@ namespace Projet
         public static RLColor gradient1 = new RLColor(255, 30, 0);
         public static RLColor gradient2 = new RLColor(255, 233, 97);
 
+        public static RLColor[] TerminalColors = new RLColor[] { RLColor.Blue, RLColor.Red, RLColor.Yellow, RLColor.Green, RLColor.White };
+
         public static RLColor GetDarkerColor(RLColor color)
         {
             return RLColor.Blend(color, RLColor.Black, 150);

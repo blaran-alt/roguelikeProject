@@ -9,60 +9,53 @@ using RogueSharp;
 
 namespace Projet.Core
 {
-    public class Stairs : IDrawable
+    public class Stairs : Object
     {
-        public RLColor Color
-        {
-            get; set;
-        }
-        public char Symbol
-        {
-            get; set;
-        }
-        public int X
-        {
-            get; set;
-        }
-        public int Y
-        {
-            get; set;
-        }
-        public Point Coord
-        {
-            get
-            {
-                return new Point(X, Y);
-            }
-            set
-            {
-                X = value.X;
-                Y = value.Y;
-            }
-        }
         public bool IsUp
         {
-            get; set;
+            get;
+        }
+        public bool IsOpen
+        {
+            get;
+            set;
         }
 
-        public void Draw(RLConsole console, IMap map, bool animation)
+        public Stairs(int x, int y, bool isUp) : base(isUp ? '<' : '_', x, y, RLColor.Black)
+        {
+            IsUp = isUp;
+            if (isUp)
+            {
+                IsOpen = true;
+            }
+            else
+            {
+                IsOpen = false;
+            }
+        }
+
+        public override void Draw(RLConsole console, IMap map, bool animation)
         {
             if (!map.GetCell(X, Y).IsExplored)
             {
                 return;
             }
 
-            Symbol = IsUp ? '<' : '>';
+            if (IsOpen)
+            {
+                Symbols = new int[] { '>' };
+            }
 
             if (map.IsInFov(X, Y))
             {
                 Color = Colors.Player;
+                console.Set(X, Y, Color, null, Symbols[0]);
             }
-            else
+            else if(Game.Map.LightsOn)
             {
                 Color = Colors.Floor;
+                console.Set(X, Y, Color, null, Symbols[0]);
             }
-
-            console.Set(X, Y, Color, null, Symbol);
         }
     }
 }

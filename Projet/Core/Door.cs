@@ -9,72 +9,21 @@ using Projet.Interfaces;
 
 namespace Projet.Core
 {
-    public class Door : IDrawable
+    public class Door : Object
     {
-        public Door()
+        public Door(int x, int y) : base('+', x, y, Colors.Door)
         {
-            Symbol = '+';
-            Color = Colors.Door;
             BackgroundColor = Colors.DoorBackground;
+            IsOpen = false;
         }
         public bool IsOpen { get; set; }
 
-        public RLColor Color { get; set; }
         public RLColor BackgroundColor { get; set; }
-        public char Symbol { get; set; }
-        public int X { get; set; }
-        public int Y { get; set; }
-        public Point Coord
+
+        public override void Draw(RLConsole console, IMap map, bool animation)
         {
-            get
-            {
-                return new Point(X, Y);
-            }
-            set
-            {
-                X = value.X;
-                Y = value.Y;
-            }
-        }
-
-        public void Draw(RLConsole console, IMap map, bool animation)
-        {
-            if (!map.GetCell(X, Y).IsExplored)
-            {
-                return;
-            }
-            
-            if (IsOpen)
-            {
-                Symbol = '-';
-                if (map.IsInFov(X, Y))
-                {
-                    Color = Colors.DoorFov;
-                    BackgroundColor = Colors.FloorBackgroundFov;
-                }
-                else
-                {
-                    Color = Colors.Door;
-                    BackgroundColor = Colors.FloorBackground;
-                }
-            }
-            else
-            {
-                Symbol = '+';
-                if (map.IsInFov(X, Y))
-                {
-                    Color = Colors.DoorFov;
-                    BackgroundColor = Colors.DoorBackgroundFov;
-                }
-                else
-                {
-                    Color = Colors.Door;
-                    BackgroundColor = Colors.DoorBackground;
-                }
-            }
-
-
-            console.Set(X, Y, Color, BackgroundColor, Symbol);
+            Symbols = (IsOpen) ? new int[] { '-' } : new int[] { '+' };
+            base.Draw(console, map, animation);
         }
     }
 }

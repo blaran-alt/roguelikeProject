@@ -94,7 +94,7 @@ namespace Projet
         private static readonly string url = "http://dreamlo.com/lb/";
         private static readonly string privateCode = "B74mhUF1P0qYbdl25ck9SwvmHyT-sZtU2paBghAtcHtw";
         private static readonly string publicCode = "607d5d13778d3cf9c4183991";
-        private static WebClient client;
+        private static readonly WebClient client;
 
         public static void Main()
         {
@@ -123,7 +123,7 @@ namespace Projet
             save.Seeds.Add(seed);
 
             // This must be the exact name of the bitmap font file we are using or it will error.
-            string fontFileName = "ExtendTest.png";
+            string fontFileName = "ExtendTestBis.png";
             // The title will appear at the top of the console window
             string consoleTitle = $"RogueSharp V3 Tutorial - Level {_mapLevel} - Seed {seed}";
 
@@ -156,6 +156,14 @@ namespace Projet
 
             InitializeGame();
             _time = DateTime.Now;
+
+            foreach(ICell cell in Map.GetAllCells())
+            {
+                if (!cell.IsTransparent && cell.IsWalkable)
+                {
+                    Console.WriteLine($"Check => ({cell.X}:{cell.Y}) : {cell.IsTransparent} - {cell.IsWalkable}");
+                }
+            }
             // Begin RLNET's game loop
             _rootConsole.Run();
         }
@@ -185,6 +193,7 @@ namespace Projet
         {
             return new Point(_rootConsole.Mouse.X, _rootConsole.Mouse.Y);
         }
+        public static MapGenerator mapGenerator;
 
         private static void InitializeGame()
         {
@@ -201,7 +210,7 @@ namespace Projet
             MessageLog.Add($"Level created with seed '{seed}'");
 
             //MapGenerator mapGenerator = new MapGenerator(_mapWidth, _mapHeight, 30, 10, 7, _mapLevel);
-            MapGenerator mapGenerator = new CortexGenerator(_mapWidth, _mapHeight, 30, 10, 7, _mapLevel);
+            mapGenerator = new CortexGenerator(_mapWidth, _mapHeight, 30, 10, 7, _mapLevel);
             Map = mapGenerator.CreateMap(seed);
             Map.UpdatePlayerFieldOfView();
 
@@ -216,7 +225,7 @@ namespace Projet
         }
 
         private static DateTime _time;
-        private static string inputText;
+        private static TextArea inputText;
         private static bool takeTextInput = false;
 
         // Event handler for RLNET's Update event
@@ -232,21 +241,25 @@ namespace Projet
                 {
                     if (keyPress.Key == RLKey.Space)
                     {
-                        inputText += ' ';
+                        inputText.Value += ' ';
                         _renderRequired = true;
                     }
                     else if(keyPress.Key == RLKey.BackSpace)
                     {
-                        inputText = inputText.Remove(inputText.Length - 1);
+                        inputText.Value = inputText.Value.Remove(inputText.Value.Length - 1);
+                        if(inputText.Value == "")
+                        {
+                            inputText.Value = inputText.DefaultValue;
+                        }
                         _renderRequired = true;
                     }
                     else if(keyPress.Key == RLKey.Enter)
                     {
-                        //Submit the input by invoking the button's event
+                        inputText.Click();
                     }
                     else
                     {
-                        inputText += keyPress.Key.ToString();
+                        inputText.Value += keyPress.Key.ToString();
                     }
                 }
                 else
@@ -355,9 +368,20 @@ namespace Projet
                         }
                         else
                         {
-                            if (Inventory.NextSelection())
+                            //if (Inventory.NextSelection())
+                            //{
+                            //    _renderRequired = true;
+                            //}
+                            foreach(ICell cell in Map.GetBorderCellsInCircle(Player.X, Player.Y, 1))
                             {
-                                _renderRequired = true;
+                                Terminal terminal = Map.GetTerminalAt(cell.X, cell.Y);
+                                if(terminal != null)
+                                {
+                                    terminal.isActive = !terminal.isActive;
+                                    Map.StairsDown.IsOpen = Map.NextLevelCondition();
+                                    _renderRequired = true;
+                                    break;
+                                }
                             }
                         }
                     }
@@ -427,7 +451,7 @@ namespace Projet
                         }
                         else if (keyPress.Key == RLKey.Period && !openInventory)
                         {
-                            if (Map.CanMoveDownToNextLevel() || true)
+                            if (Map.CanMoveDownToNextLevel())
                             {
                                 Thread thread = new Thread(LoadNextLevel);
                                 thread.Start();
@@ -472,7 +496,7 @@ namespace Projet
             Random = new DotNetRandom(seed);
             // Saving that seed int the save
             save.Seeds.Add(seed);
-            MapGenerator mapGenerator = new MapGenerator(_mapWidth, _mapHeight, 50, 20, 7, ++_mapLevel);
+            mapGenerator = new MapGenerator(_mapWidth, _mapHeight, 50, 20, 7, ++_mapLevel);
             Map = mapGenerator.CreateMap(seed);
             MessageLog = new MessageLog();
             CommandSystem = new CommandSystem();
@@ -507,13 +531,20 @@ namespace Projet
             Thread.Sleep(2000);
         }
 
-        public static void Quit(object sender, MenuEventArgs args)
+        public static void Quit(object sender, EventArgs args)
         {
             _rootConsole.Close();
         }
 
-        public static void Start(object sender, MenuEventArgs args)
+        public static void Start(object sender, EventArgs args)
         {
+            menu = false;
+        }
+
+        public static void StartWithSeed(object sender, MenuEventArgs args)
+        {
+            seed = args.IntValue;
+            InitializeGame();
             menu = false;
         }
 
@@ -557,7 +588,7 @@ namespace Projet
                 _inventoryConsole.SetBackColor(0, 0, _inventoryWidth, _inventoryHeight, Colors.Compliment);
                 _inventoryConsole.Print(1, 1, "Inventory", RLColor.White);
 
-                Map.Draw(_mapConsole, _statConsole);
+                Map.Draw(_mapConsole, _statConsole, _nextAnimation);
                 Player.Draw(_mapConsole, Map, _nextAnimation);
                 MessageLog.Draw(_messageConsole);
                 Player.DrawStats(_statConsole);
@@ -565,6 +596,8 @@ namespace Projet
                 Inventory.AlternateDraw(_inventoryConsole, _mapConsole);
 
                 _statConsole.Print(6, _statHeight - 2, $"({Player.X},{Player.Y})", Colors.Text);
+                ICell cell = Map.GetCell(Player.X, Player.Y);
+                _statConsole.Print(0, _statHeight - 1, $"T: {cell.IsTransparent}, W: {cell.IsWalkable}", Colors.Text);
 
                 if (_activeSelection)
                 {
@@ -610,7 +643,7 @@ namespace Projet
                 _inventoryConsole.Clear();
                 _UIConsole.Clear();
 
-                Map.Draw(_mapConsole, _statConsole);
+                Map.Draw(_mapConsole, _statConsole, false);
                 MessageLog.Draw(_messageConsole);
                 Player.DrawStats(_statConsole);
 
@@ -650,6 +683,7 @@ namespace Projet
             _gameOver = true;
             _activeSelection = false;
             _renderRequired = true;
+            Map.SetIsWalkable(Player.Coord, true);
         }
     }
 }

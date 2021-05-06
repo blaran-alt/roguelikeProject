@@ -22,6 +22,8 @@ namespace Projet.Core
         private string _name;
         private int _speed;
 
+        public int AnimationIndex { get; set; }
+
         public int Attack
         {
             get
@@ -144,7 +146,7 @@ namespace Projet.Core
 
         // IDrawable
         public RLColor Color { get; set; }
-        public char Symbol { get; set; }
+        public int[] Symbols { get; set; }
         public int X { get; set; }
         public int Y { get; set; }
         public Point Coord
@@ -171,9 +173,13 @@ namespace Projet.Core
             // Only draw the actor with the color and symbol when they are in field-of-view
             if (map.IsInFov(X, Y))
             {
-                console.Set(X, Y, Color, Colors.FloorBackgroundFov, Symbol);
+                console.Set(X, Y, Color, Colors.FloorBackgroundFov, Symbols[AnimationIndex]);
+                if (animation && ++AnimationIndex >= Symbols.Length)
+                {
+                    AnimationIndex = 0;
+                }
             }
-            else
+            else if(Game.Map.LightsOn)
             {
                 // When not in field-of-view just draw a normal floor
                 console.Set(X, Y, Colors.Floor, Colors.FloorBackground, '.');

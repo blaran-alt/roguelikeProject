@@ -25,7 +25,7 @@ namespace Projet.Items
             Y = y;
             EffectCode = effectCode;
             Color = colors[effectCode];
-            Symbol = '^';
+            Symbols = new int[] { '^' };
             _effect = _effects[effectCode];
         }
         public Potion(int effectCode, int x, int y ) : this (true, x, y, effectCode) { }
@@ -72,7 +72,7 @@ namespace Projet.Items
         {
             x = Game.GetPropostionnalSize(x);
             y = Game.GetPropostionnalSize(y);
-            console.Set(x, y, Color, null, Symbol);
+            console.Set(x, y, Color, null, Symbols[0]);
             console.Print(x + 3, y, _effect, Colors.Text, Colors.ComplimentDarkest);
             console.Print(x + 2, y + 1, Quantity.ToString(), Colors.Text, Colors.ComplimentDarkest);
         }

@@ -17,15 +17,12 @@ namespace Projet.Core
             DefenseChance = 40;
             Gold = 0;
             Health = 20;
-            MaxHealth = 1;
+            MaxHealth = 100;
             Name = "Rogue";
             Speed = 10;
-            Symbol = '@';
+            Symbols = new int[] { 64, 251, 1, 2,  1, 251 };
             AnimationIndex = 0;
         }
-
-        private int[] playerAnimation = { 64, 251, 1, 2,  1, 251 };
-        private int AnimationIndex;
 
         public void DrawStats(RLConsole statConsole)
         {
@@ -53,8 +50,8 @@ namespace Projet.Core
             // Only draw the actor with the color and symbol when they are in field-of-view
             if (map.IsInFov(X, Y))
             {
-                console.Set(X, Y, Color, Colors.FloorBackgroundFov, playerAnimation[AnimationIndex]);
-                if (nextAnimation && ++AnimationIndex >= playerAnimation.Length)
+                console.Set(X, Y, Color, Colors.FloorBackgroundFov, Symbols[AnimationIndex]);
+                if (nextAnimation && ++AnimationIndex >= Symbols.Length)
                 {
                     AnimationIndex = 0;
                 }

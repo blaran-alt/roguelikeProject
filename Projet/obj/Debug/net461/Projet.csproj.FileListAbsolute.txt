@@ -48,3 +48,4 @@ C:\Users\hugod\Source\Repos\roguelikeProject\Projet\bin\Debug\net461\RandomAcces
 C:\Users\hugod\Source\Repos\roguelikeProject\Projet\bin\Debug\net461\RandomImpls.dll
 C:\Users\hugod\Source\Repos\roguelikeProject\Projet\bin\Debug\net461\SimplexNoise.dll
 C:\Users\hugod\Source\Repos\roguelikeProject\Projet\obj\Debug\net461\Projet.csproj.CoreCompileInputs.cache
+C:\Users\hugod\Source\Repos\roguelikeProject\Projet\bin\Debug\net461\ExtendTestBis.png

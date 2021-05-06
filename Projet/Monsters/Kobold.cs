@@ -19,7 +19,7 @@ namespace Projet.Monsters
                 Attack = Dice.Roll("1D3") + level / 3,
                 AttackChance = Dice.Roll("25D3"),
                 Awareness = 10,
-                Color = Colors.KoboldColor,
+                Color = RLColor.White,
                 Defense = Dice.Roll("1D3") + level / 3,
                 DefenseChance = Dice.Roll("10D4"),
                 Gold = Dice.Roll("5D5"),
@@ -27,7 +27,7 @@ namespace Projet.Monsters
                 MaxHealth = 10,
                 Name = "Kobold",
                 Speed = 14,
-                Symbol = 'k'
+                Symbols = new int[] { 256, 256, 256, 257}
             };
         }
     }

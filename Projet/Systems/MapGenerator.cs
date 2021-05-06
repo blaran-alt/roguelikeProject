@@ -20,7 +20,7 @@ namespace Projet.Systems
         protected readonly string[] _existingItems;
         protected readonly int _mapLevel;
 
-        protected readonly GameMap _map;
+        protected GameMap _map;
 
         // Constructing a new MapGenerator requires the dimensions of the maps it will create
         public MapGenerator(int width, int height, int maxRooms, int roomMaxSize, int roomMinSize, int mapLevel)
@@ -123,9 +123,7 @@ namespace Projet.Systems
             PlaceMonsters();
             PlaceItems();
 
-            Box box = new Box();
-            box.X = _map.Rooms[0].Center.X + 1;
-            box.Y = _map.Rooms[0].Center.Y + 1;
+            Box box = new Box(_map.Rooms[0].Center.X + 1, _map.Rooms[0].Center.Y + 1);
 
             _map.AddBox(box);
 
@@ -283,10 +281,9 @@ namespace Projet.Systems
                         // In that case skip creating the monster
                         if (randomRoomLocation != Point.Zero)
                         {
-                            // Temporarily hard code this monster to be created at level 1
+                            // Create a monster
                             var monster = Kobold.Create(Game.Level);
-                            monster.X = randomRoomLocation.X;
-                            monster.Y = randomRoomLocation.Y;
+                            monster.Coord = randomRoomLocation;
                             _map.AddMonster(monster);
                         }
                     }
@@ -382,18 +379,13 @@ namespace Projet.Systems
                 {
                     // A door must block field-of-view when it is closed.
                     _map.SetCellProperties(cell.X, cell.Y, false, true);
-                    _map.Doors.Add(new Door
-                    {
-                        X = cell.X,
-                        Y = cell.Y,
-                        IsOpen = false
-                    });
+                    _map.Doors.Add(new Door(cell.X, cell.Y));
                 }
             }
         }
 
         // Checks to see if a cell is a good candidate for placement of a door
-        private bool IsPotentialDoor(ICell cell)
+        protected bool IsPotentialDoor(ICell cell)
         {
             // If the cell is not walkable
             // then it is a wall and not a good place for a door
@@ -402,11 +394,47 @@ namespace Projet.Systems
                 return false;
             }
 
-            // Store references to all of the neighboring cells 
-            ICell right = _map.GetCell(cell.X + 1, cell.Y);
-            ICell left = _map.GetCell(cell.X - 1, cell.Y);
-            ICell top = _map.GetCell(cell.X, cell.Y - 1);
-            ICell bottom = _map.GetCell(cell.X, cell.Y + 1);
+            // Store references to all of the neighboring cells
+            int x = cell.X;
+            int y = cell.Y;
+
+            ICell right;
+            ICell left;
+            ICell top;
+            ICell bottom;
+
+            if (_map.IsInMap(x + 1, y))
+            {
+                right = _map.GetCell(x + 1, y);
+            }
+            else
+            {
+                right = new Cell(x + 1, y, false, false, false);
+            }
+            if (_map.IsInMap(x - 1, y))
+            {
+                left = _map.GetCell(x - 1, y);
+            }
+            else
+            {
+                left = new Cell(x - 1, y, false, false, false);
+            }
+            if (_map.IsInMap(x, y - 1))
+            {
+                top = _map.GetCell(x, y - 1);
+            }
+            else
+            {
+                top = new Cell(x, y - 1, false, false, false);
+            }
+            if (_map.IsInMap(x, y + 1))
+            {
+                bottom = _map.GetCell(x, y + 1);
+            }
+            else
+            {
+                bottom = new Cell(x, y + 1, false, false, false);
+            }
 
             // Make sure there is not already a door here
             if (_map.GetDoor(cell.X, cell.Y) != null ||
@@ -434,18 +462,8 @@ namespace Projet.Systems
 
         private void CreateStairs()
         {
-            _map.StairsUp = new Stairs
-            {
-                X = _map.Rooms.First().Center.X + 1,
-                Y = _map.Rooms.First().Center.Y,
-                IsUp = true
-            };
-            _map.StairsDown = new Stairs
-            {
-                X = _map.Rooms.Last().Center.X,
-                Y = _map.Rooms.Last().Center.Y,
-                IsUp = false
-            };
+            _map.StairsUp = new Stairs(_map.Rooms.First().Center.X + 1, _map.Rooms.First().Center.Y, true);
+            _map.StairsDown = new Stairs(_map.Rooms.Last().Center.X, _map.Rooms.Last().Center.Y, false);
         }
     }
 }

@@ -13,20 +13,20 @@ namespace Projet.UI
     {
         public string Value { get; set; }
         private char _symbol;
-        public event EventHandler<MenuEventArgs> OnClick;
-        protected MenuEventArgs eventArgs;
+        public event EventHandler<EventArgs> OnClick;
+        protected EventArgs eventArgs;
         public Point TopLeftCorner { get; set; }
         public Point BottomRightCorner { get; set; }
         private RLColor _color;
         private RLColor _hoverColor;
-        private int width
+        protected int Width
         {
             get
             {
                 return BottomRightCorner.X - TopLeftCorner.X;
             }
         }
-        private int height
+        protected int Height
         {
             get
             {
@@ -42,7 +42,7 @@ namespace Projet.UI
             BottomRightCorner = bottomRightCorner;
             _color = color;
             _hoverColor = hoverColor;
-            eventArgs = EventArgs.Empty as MenuEventArgs;
+            eventArgs = EventArgs.Empty;
         }
         public Button(char symbol, Point topLeftCorner, Point bottomRightCorner, RLColor color, RLColor hoverColor)
         {
@@ -52,10 +52,10 @@ namespace Projet.UI
             BottomRightCorner = bottomRightCorner;
             _color = color;
             _hoverColor = hoverColor;
-            eventArgs = EventArgs.Empty as MenuEventArgs;
+            eventArgs = EventArgs.Empty;
         }
 
-        public void Draw(RLConsole console, bool isHovered)
+        public  void Draw(RLConsole console, bool isHovered)
         {
             RLColor color;
             if (isHovered)
@@ -66,13 +66,13 @@ namespace Projet.UI
             {
                 color = _color;
             }
-            console.SetBackColor(TopLeftCorner.X, TopLeftCorner.Y, width, height, color);
+            console.SetBackColor(TopLeftCorner.X, TopLeftCorner.Y, Width, Height, color);
             string value;
             int displayX;
             if(Value == "")
             {
                 value = _symbol.ToString();
-                displayX = TopLeftCorner.X + width / 2;
+                displayX = TopLeftCorner.X + Width / 2;
             }
             else
             {

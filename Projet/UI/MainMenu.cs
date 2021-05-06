@@ -12,7 +12,6 @@ namespace Projet.UI
     {
         public MainMenu(int width, int height) : base(new List<Button>(), "Main Menu", width, height)
         {
-            Console.WriteLine(Game.GetPropostionnalSize(70, 42));
             Button playButton = new Button("Play", Game.GetPropostionnalSize(20,15), Game.GetPropostionnalSize(80, 30), Colors.Compliment, Colors.ComplimentDarker);
             playButton.OnClick += Game.Start;
             Button playWithSeedButton = new Button("Play with seed", Game.GetPropostionnalSize(20, 32), Game.GetPropostionnalSize(80, 42), Colors.Compliment, Colors.ComplimentDarker);
