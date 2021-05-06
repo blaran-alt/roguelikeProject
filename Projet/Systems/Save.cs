@@ -23,21 +23,28 @@ namespace Projet.Systems
         }
         public Save()
         {
-            Name = "Test";
+            Name = "Unnamed";
             Seeds = new List<int>();
         }
-        public Save(string name) : this()
+        public Save(int saveIndex, out bool last) : this()
         {
             using(StreamReader streamReader = new StreamReader("Saves.txt"))
             {
-                Name = name;
                 string line;
                 bool loadLevels = false;
+                int i = 0;
+                last = true;
                 while((line = streamReader.ReadLine()) != null)
                 {
-                    if(!loadLevels && line[0] == '.' && line.Substring(1) == Name)
+                    if(!loadLevels && line[0] == '.')
                     {
-                        loadLevels = true;
+                        if(i == saveIndex)
+                        {
+                            last = false;
+                            loadLevels = true;
+                            Name = line.Substring(1);
+                        }
+                        i++;
                     }
                     else if (loadLevels)
                     {
@@ -47,7 +54,6 @@ namespace Projet.Systems
                         }
                         else
                         {
-                            Console.WriteLine(line);
                             Seeds.Add(int.Parse(line));
                         }
                     }
@@ -55,8 +61,9 @@ namespace Projet.Systems
             }
         }
 
-        public void SaveInFile()
+        public void SaveInFile(string name)
         {
+            Name = name;
             using (StreamWriter streamWriter = File.AppendText("Saves.txt"))
             {
                 streamWriter.WriteLine("." + Name);

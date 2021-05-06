@@ -12,7 +12,7 @@ namespace Projet.UI
     {
         public int Width { get; set; }
         public int Height { get; set; }
-        protected Point _mousePos;
+        public static Point _mousePos;
         protected readonly string _name;
         protected List<Button> _buttons;
 
@@ -24,10 +24,10 @@ namespace Projet.UI
             Height = height;
         }
 
-        public void Draw(RLConsole console, Point mousePos)
+        public virtual void Draw(RLConsole console, Point mousePos)
         {
             _mousePos = mousePos;
-            console.Print((console.Width - _name.Length) / 2, 5, _name, Colors.TextHeading);
+            console.Print(Game.GetCenterOffset(console.Width, _name.Length), 5, _name, Colors.TextHeading);
             foreach (Button button in _buttons)
             {
                 button.Draw(console, IsOverButton(button));
@@ -35,6 +35,10 @@ namespace Projet.UI
         }
 
         private bool IsOverButton(Button button)
+        {
+            return (_mousePos.X > button.TopLeftCorner.X && _mousePos.X < button.BottomRightCorner.X && _mousePos.Y > button.TopLeftCorner.Y && _mousePos.Y < button.BottomRightCorner.Y);
+        }
+        public static bool StaticIsOverButton(Button button)
         {
             return (_mousePos.X > button.TopLeftCorner.X && _mousePos.X < button.BottomRightCorner.X && _mousePos.Y > button.TopLeftCorner.Y && _mousePos.Y < button.BottomRightCorner.Y);
         }

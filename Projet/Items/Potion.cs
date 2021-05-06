@@ -70,8 +70,8 @@ namespace Projet.Items
 
         public override void AlternateDrawInContainer(RLConsole console, int x, int y)
         {
-            x = Game.GetPropostionnalSize(x);
-            y = Game.GetPropostionnalSize(y);
+            x = Game.GetProportionnalHorizontalSize(x);
+            y = Game.GetProportionnalHorizontalSize(y);
             console.Set(x, y, Color, null, Symbols[0]);
             console.Print(x + 3, y, _effect, Colors.Text, Colors.ComplimentDarkest);
             console.Print(x + 2, y + 1, Quantity.ToString(), Colors.Text, Colors.ComplimentDarkest);

@@ -12,6 +12,7 @@ using Projet.UI;
 using System.Net;
 using System.Threading;
 using RandomAccessPerlinNoise;
+using RogueSharp.DiceNotation;
 
 namespace Projet
 {
@@ -20,46 +21,50 @@ namespace Projet
         // The screen height and width are in number of tiles
         private static readonly int _screenWidth = 85;
         private static readonly double SizeRatio = _screenWidth / 100f;
-        private static readonly int _screenHeight = GetPropostionnalSize(55);
+        private static readonly int _screenHeight = GetProportionnalHorizontalSize(55);
         private static RLRootConsole _rootConsole;
 
-        public static int GetPropostionnalSize(int value)
+        public static int GetProportionnalHorizontalSize(int value)
         {
             return Math.Max((int)Math.Round(value * SizeRatio), 1);
         }
-        public static Point GetPropostionnalSize(int x, int y)
+        public static int GetProportionnalVerticalSize(int value)
         {
-            return new Point(GetPropostionnalSize(x),GetPropostionnalSize(y));
+            return Math.Max((int)Math.Round(value * _screenHeight / 100f), 1);
+        }
+        public static Point GetProportionnalSize(int x, int y)
+        {
+            return new Point(GetProportionnalHorizontalSize(x),GetProportionnalVerticalSize(y));
         }
 
         // The map console takes up most of the screen and is where the map will be drawn
-        private static readonly int _onConsoleMapWidth = GetPropostionnalSize(80);
-        private static readonly int _onConsoleMapHeight = GetPropostionnalSize(40);
+        private static readonly int _onConsoleMapWidth = GetProportionnalHorizontalSize(80);
+        private static readonly int _onConsoleMapHeight = GetProportionnalHorizontalSize(40);
         private static readonly int _mapWidth = 120;
         private static readonly int _mapHeight = 60;
         private static RLConsole _mapConsole;
 
         // Below the map console is the message console which displays attack rolls and other information
-        private static readonly int _messageWidth = GetPropostionnalSize(80);
-        private static readonly int _messageHeight = GetPropostionnalSize(8);
+        private static readonly int _messageWidth = GetProportionnalHorizontalSize(80);
+        private static readonly int _messageHeight = GetProportionnalHorizontalSize(8);
         private static RLConsole _messageConsole;
 
         // The stat console is to the right of the map and display player and monster stats
-        private static readonly int _statWidth = GetPropostionnalSize(20);
+        private static readonly int _statWidth = GetProportionnalHorizontalSize(20);
         private static readonly int _statHeight = _screenHeight;
         private static RLConsole _statConsole;
 
         // Above the map is the inventory console which shows the players equipment, abilities, and items
-        private static readonly int _inventoryWidth = GetPropostionnalSize(80);
-        private static readonly int _inventoryHeight = GetPropostionnalSize(7);
+        private static readonly int _inventoryWidth = GetProportionnalHorizontalSize(80);
+        private static readonly int _inventoryHeight = GetProportionnalHorizontalSize(7);
         private static RLConsole _inventoryConsole;
 
-        private static readonly int _UIWidth = GetPropostionnalSize(40);
-        private static readonly int _UIHeight = GetPropostionnalSize(10);
+        private static readonly int _UIWidth = GetProportionnalHorizontalSize(40);
+        private static readonly int _UIHeight = GetProportionnalHorizontalSize(10);
         private static RLConsole _UIConsole;
 
-        private static readonly int _containerWidth = GetPropostionnalSize(70);
-        private static readonly int _containerHeight = GetPropostionnalSize(24);
+        private static readonly int _containerWidth = GetProportionnalHorizontalSize(70);
+        private static readonly int _containerHeight = GetProportionnalHorizontalSize(24);
         private static RLConsole _containerConsole;
 
         public static Player Player { get;  set; }
@@ -77,9 +82,9 @@ namespace Projet
         //------------------------------------------------------------//
 
         public static IRandom Random { get; private set; }
-        private static int seed;
+        private static int _seed;
 
-        private static Save save;
+        private static Save _save;
 
         private static bool _renderRequired = true;
         private static int _mapLevel;
@@ -88,8 +93,10 @@ namespace Projet
         private static bool openInventory = false;
         private static Point lastMousePos;
 
-        private static Menu mainMenu;
-        private static bool menu;
+        private static Menu menu;
+        private static bool displayMenu;
+
+        private static bool playWithSeed;
 
         private static readonly string url = "http://dreamlo.com/lb/";
         private static readonly string privateCode = "B74mhUF1P0qYbdl25ck9SwvmHyT-sZtU2paBghAtcHtw";
@@ -98,8 +105,10 @@ namespace Projet
 
         public static void Main()
         {
-            mainMenu = new MainMenu(_screenWidth, _screenHeight);
-            menu = true;
+            _gameOver = true;
+
+            menu = new MainMenu(_screenWidth, _screenHeight);
+            displayMenu = true;
 
             //client = new WebClient();
             //client.UploadString(url + privateCode + "/add" + "/Name3/91","");
@@ -115,22 +124,14 @@ namespace Projet
             //save = new Save("Test");
             //seed = save.Seeds[0];
 
-            // Establish the seed for the random number generator from the current time
-            seed = (int)DateTime.UtcNow.Ticks;
-            Random = new DotNetRandom(seed);
-
-            save = new Save();
-            save.Seeds.Add(seed);
 
             // This must be the exact name of the bitmap font file we are using or it will error.
             string fontFileName = "ExtendTestBis.png";
-            // The title will appear at the top of the console window
-            string consoleTitle = $"RogueSharp V3 Tutorial - Level {_mapLevel} - Seed {seed}";
 
             Console.WriteLine(SizeRatio);
             // Tell RLNet to use the bitmap font that we specified and that each tile is 8 x 8 pixels
             _rootConsole = new RLRootConsole(fontFileName, _screenWidth, _screenHeight,
-              16, 16, 1f, consoleTitle);
+              16, 16, 1f, "Game Name");
             _rootConsole.SetWindowState(RLWindowState.Fullscreen);
 
             // Initialize the sub consoles that we will Blit to the root console
@@ -154,16 +155,8 @@ namespace Projet
             _inventoryConsole.SetBackColor(0, 0, _inventoryWidth, _inventoryHeight, Colors.Compliment);
             _inventoryConsole.Print(1, 1, "Inventory", RLColor.White);
 
-            InitializeGame();
             _time = DateTime.Now;
 
-            foreach(ICell cell in Map.GetAllCells())
-            {
-                if (!cell.IsTransparent && cell.IsWalkable)
-                {
-                    Console.WriteLine($"Check => ({cell.X}:{cell.Y}) : {cell.IsTransparent} - {cell.IsWalkable}");
-                }
-            }
             // Begin RLNET's game loop
             _rootConsole.Run();
         }
@@ -197,21 +190,41 @@ namespace Projet
 
         private static void InitializeGame()
         {
-            _mapLevel = 1;
+            if (playWithSeed)
+            {
+                _seed = _save.Seeds[_mapLevel - 1];
+            }
+            else
+            {
+                // Establish the seed for the random number generator from the current time
+                _seed = (int)DateTime.UtcNow.Ticks;
 
-            _rootConsole.Title = $"RogueSharp RLNet Tutorial - Level {_mapLevel} - Seed {seed}";
+                _save = new Save();
+                _save.Seeds.Add(_seed);
+            }
+            Random = new DotNetRandom(_seed);
+            DisplayAsync();
+
+            _rootConsole.Title = $"RogueSharp RLNet Tutorial - Level {_mapLevel} - Seed {_seed}";
 
             CommandSystem = new CommandSystem();
             SchedulingSystem = new SchedulingSystem();
             Inventory = new Inventory();
 
             MessageLog = new MessageLog();
-            MessageLog.Add("The rogue arrives on level 1");
-            MessageLog.Add($"Level created with seed '{seed}'");
+            MessageLog.Add("The rogue arrives on level " + _mapLevel);
+            MessageLog.Add($"Level created with seed '{_seed}'");
 
-            //MapGenerator mapGenerator = new MapGenerator(_mapWidth, _mapHeight, 30, 10, 7, _mapLevel);
-            mapGenerator = new CortexGenerator(_mapWidth, _mapHeight, 30, 10, 7, _mapLevel);
-            Map = mapGenerator.CreateMap(seed);
+            if(_mapLevel == 1)
+            {
+                mapGenerator = new CortexGenerator(_mapWidth, _mapHeight, 30, 10, 7, _mapLevel);
+            }
+            else
+            {
+                mapGenerator = new MapGenerator(_mapWidth, _mapHeight, 30, 10, 7, _mapLevel);
+            }
+
+            Map = mapGenerator.CreateMap(_seed);
             Map.UpdatePlayerFieldOfView();
 
             //----------------------------//
@@ -235,10 +248,24 @@ namespace Projet
             bool selectionChanged = false;
             RLKeyPress keyPress = _rootConsole.Keyboard.GetKeyPress();
 
-            if(keyPress != null)
+            if (_rootConsole.Mouse.GetLeftClick())
+            {
+                inputText = null;
+                takeTextInput = false;
+                if (menu.Click())
+                {
+                    _renderRequired = true;
+                }
+            }
+
+            if (keyPress != null)
             {
                 if (takeTextInput)
                 {
+                    if(inputText.Value == inputText.DefaultValue)
+                    {
+                        inputText.Value = "";
+                    }
                     if (keyPress.Key == RLKey.Space)
                     {
                         inputText.Value += ' ';
@@ -246,20 +273,26 @@ namespace Projet
                     }
                     else if(keyPress.Key == RLKey.BackSpace)
                     {
-                        inputText.Value = inputText.Value.Remove(inputText.Value.Length - 1);
-                        if(inputText.Value == "")
+                        if(inputText.Value.Length > 0)
                         {
-                            inputText.Value = inputText.DefaultValue;
+                            inputText.Value = inputText.Value.Remove(inputText.Value.Length - 1);
                         }
                         _renderRequired = true;
                     }
                     else if(keyPress.Key == RLKey.Enter)
                     {
+                        inputText.EnterPressed = true;
                         inputText.Click();
                     }
-                    else
+                    else if(keyPress.Key.ToString().Length == 7 && keyPress.Key.ToString().Substring(0,6) == "Number")
                     {
-                        inputText.Value += keyPress.Key.ToString();
+                        char inputChar = keyPress.Key.ToString()[6];
+                        Console.WriteLine(inputChar);
+                        inputText.Value += inputChar;
+                    }
+                    if (inputText.Value == "")
+                    {
+                        inputText.Value = inputText.DefaultValue;
                     }
                 }
                 else
@@ -280,7 +313,11 @@ namespace Projet
                     {
                         if (_gameOver)
                         {
-                            save.SaveInFile();
+                            if (!playWithSeed)
+                            {
+                                _save.SaveInFile("oui");
+                            }
+                            _mapLevel = 1;
                             InitializeGame();
                         }
                         else if (openInventory)
@@ -311,13 +348,6 @@ namespace Projet
                         if ((int)_currentSelectionType == 8)
                         {
                             _currentSelectionType = SelectionType.Radius;
-                        }
-                    }
-                    else
-                    {
-                        if (mainMenu.Click())
-                        {
-                            _renderRequired = true;
                         }
                     }
                 }
@@ -458,13 +488,10 @@ namespace Projet
 
                                 DisplayAsync();
 
-                                if (thread.ThreadState != ThreadState.Stopped)
-                                {
-                                    thread.Join();
-                                }
+                                thread.Join();
 
                                 MessageLog.Add($"The rogue arrives on level {_mapLevel}");
-                                MessageLog.Add($"Level created with seed '{seed}'");
+                                MessageLog.Add($"Level created with seed '{_seed}'");
                                 didPlayerAct = true;
                             }
                         }
@@ -488,23 +515,43 @@ namespace Projet
             }
         }
 
+        public static int GetCenterOffset(int width, int length)
+        {
+            return (width - length) / 2;
+        }
+        public static int GetCenterVerticalOffset(int containerHeight, int inHeight)
+        {
+            return (containerHeight - inHeight) / 2;
+        }
+        public static int GetEvenlySpacedOffset(int height, int linesNb)
+        {
+            return (int)Math.Floor(((decimal)height - linesNb) / (linesNb + 1));
+        }
+
         private static void LoadNextLevel()
         {
-            // Creating a new seed for the next level
-            seed = (int)DateTime.UtcNow.Ticks;
-            //seed = save.Seeds[_mapLevel];
-            Random = new DotNetRandom(seed);
-            // Saving that seed int the save
-            save.Seeds.Add(seed);
+            if (playWithSeed)
+            {
+                _seed = _save.Seeds[_mapLevel - 1];
+            }
+            else
+            {
+                // Creating a new seed for the next level
+                _seed = (int)DateTime.UtcNow.Ticks;
+                // Saving that seed int the save
+                _save.Seeds.Add(_seed);
+            }
+
+            Random = new DotNetRandom(_seed);
             mapGenerator = new MapGenerator(_mapWidth, _mapHeight, 50, 20, 7, ++_mapLevel);
-            Map = mapGenerator.CreateMap(seed);
+            Map = mapGenerator.CreateMap(_seed);
             MessageLog = new MessageLog();
             CommandSystem = new CommandSystem();
         }
 
         private static void DisplayAsync()
         {
-            string text = "Bitch !";
+            string text = Story.TransitionTexts[_mapLevel - 1];
             _UIConsole.Clear();
             _UIConsole.SetBackColor(0, 0, _UIConsole.Width, _UIConsole.Height, RLColor.Black);
             _UIConsole.SetChar(1, 1, '_');
@@ -518,9 +565,9 @@ namespace Projet
                 _rootConsole.Draw();
                 if (letter == '.')
                 {
-                    Thread.Sleep(200);
+                    Thread.Sleep(500);
                 }
-                Thread.Sleep(Random.Next(200));
+                Thread.Sleep(Dice.Roll("3D30"));
                 i++;
                 if (i >= _UIConsole.Width - 3)
                 {
@@ -538,14 +585,48 @@ namespace Projet
 
         public static void Start(object sender, EventArgs args)
         {
-            menu = false;
+            Console.WriteLine("Start !");
+            playWithSeed = false;
+            displayMenu = false;
+            _mapLevel = 1;
+            InitializeGame();
         }
 
-        public static void StartWithSeed(object sender, MenuEventArgs args)
+        public static void OpenSeedMenu(object sender, EventArgs args)
         {
-            seed = args.IntValue;
+            menu = new ChoseSeedMenu(_screenWidth, _screenHeight);
+        }
+
+        public static void OpenSaveMenu(Save save)
+        {
+            menu = new ChoseLevel(_screenWidth, _screenHeight, _save);
+        }
+
+        public static void TakeInput(object sender, EventArgs args)
+        {
+            takeTextInput = true;
+            inputText = (TextArea)sender;
+        }
+
+        public static void StartWithSeed(int seed)
+        {
+            playWithSeed = true;
+            _seed = seed;
+            if(_save.Seeds.Count > 1)
+            {
+                _mapLevel = _save.Seeds.FindIndex(s => s == seed) + 1;
+                if(_mapLevel == -1)
+                {
+                    _mapLevel = 1;
+                }
+            }
+            else
+            {
+                _mapLevel = 1;
+            }
             InitializeGame();
-            menu = false;
+            displayMenu = false;
+            takeTextInput = false;
         }
 
         private static bool _nextAnimation;
@@ -560,7 +641,7 @@ namespace Projet
                 _nextAnimation = true;
                 _time = _currentTime;
             }
-            if (_renderRequired && !menu && !_draw)
+            if (_renderRequired && !displayMenu && !_draw)
             {
                 _rootConsole.Clear();
                 _mapConsole.Clear();
@@ -627,14 +708,15 @@ namespace Projet
                 // Tell RLNET to draw the console that we set
                 _rootConsole.Draw();
             }
-            else if (menu)
+            else if (displayMenu)
             {
+                _UIConsole.Clear();
                 _UIConsole.SetBackColor(0, 0, _screenWidth, _screenHeight, Colors.ComplimentLighter);
-                mainMenu.Draw(_UIConsole, GetMousePos());
+                menu.Draw(_UIConsole, GetMousePos());
                 RLConsole.Blit(_UIConsole, 0, 0, _screenWidth, _screenHeight, _rootConsole, 0, 0);
                 _rootConsole.Draw();
             }
-            if (_gameOver)
+            if (_gameOver && !displayMenu)
             {
                 _rootConsole.Clear();
                 _mapConsole.Clear();
@@ -659,15 +741,16 @@ namespace Projet
                         }
                     }
                 }
-                _UIConsole.Print(GetPropostionnalSize(10), GetPropostionnalSize(3), "GAME OVER", RLColor.White);
-                _UIConsole.Print(GetPropostionnalSize(3), GetPropostionnalSize(6), "Press Enter to play again", RLColor.LightGray);
+                int offset = GetEvenlySpacedOffset(_UIHeight, 2);
+                _UIConsole.Print(GetCenterOffset(_UIWidth, 9), offset, "GAME OVER", RLColor.White);
+                _UIConsole.Print(GetCenterOffset(_UIWidth, 25), 2*offset + 1, "Press Enter to play again", RLColor.LightGray);
 
                 Point mapBlitOrigin = GetMapBlitOrigin();
                 RLConsole.Blit(_mapConsole, mapBlitOrigin.X, mapBlitOrigin.Y, _onConsoleMapWidth, _onConsoleMapHeight, _rootConsole, 0, _inventoryHeight);
                 RLConsole.Blit(_statConsole, 0, 0, _statWidth, _statHeight, _rootConsole, _onConsoleMapWidth, 0);
                 RLConsole.Blit(_messageConsole, 0, 0, _messageWidth, _messageHeight, _rootConsole, 0, _screenHeight - _messageHeight);
                 RLConsole.Blit(_inventoryConsole, 0, 0, _inventoryWidth, _inventoryHeight, _rootConsole, 0, 0);
-                RLConsole.Blit(_UIConsole, 0, 0, _UIWidth, _UIHeight, _rootConsole, GetPropostionnalSize(35), GetPropostionnalSize(25));
+                RLConsole.Blit(_UIConsole, 0, 0, _UIWidth, _UIHeight, _rootConsole, GetCenterOffset(_screenWidth, _UIWidth), GetCenterVerticalOffset(_screenHeight, _UIHeight));
 
                 _rootConsole.Draw();
             }

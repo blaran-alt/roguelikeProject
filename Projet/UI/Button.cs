@@ -11,14 +11,24 @@ namespace Projet.UI
 {
     public class Button
     {
-        public string Value { get; set; }
-        private char _symbol;
+        public string[] Values { get; set; }
+        protected char _symbol;
         public event EventHandler<EventArgs> OnClick;
-        protected EventArgs eventArgs;
-        public Point TopLeftCorner { get; set; }
-        public Point BottomRightCorner { get; set; }
-        private RLColor _color;
-        private RLColor _hoverColor;
+        public EventArgs eventArgs;
+        protected Point _topLeftCorner;
+        public Point TopLeftCorner { get
+            {
+                return _topLeftCorner;
+            }
+        }
+        protected Point _bottomRightCorner;
+        public Point BottomRightCorner { get
+            {
+                return _bottomRightCorner;
+            }
+        }
+        protected RLColor _color;
+        protected RLColor _hoverColor;
         protected int Width
         {
             get
@@ -36,26 +46,36 @@ namespace Projet.UI
 
         public Button(string value, Point topLeftCorner, Point bottomRightCorner, RLColor color, RLColor hoverColor)
         {
-            Value = value;
+            Values = new string[] { value };
             _symbol = ' ';
-            TopLeftCorner = topLeftCorner;
-            BottomRightCorner = bottomRightCorner;
+            _topLeftCorner = topLeftCorner;
+            _bottomRightCorner = bottomRightCorner;
             _color = color;
             _hoverColor = hoverColor;
             eventArgs = EventArgs.Empty;
         }
         public Button(char symbol, Point topLeftCorner, Point bottomRightCorner, RLColor color, RLColor hoverColor)
         {
-            Value = "";
+            Values = null;
             _symbol = symbol;
-            TopLeftCorner = topLeftCorner;
-            BottomRightCorner = bottomRightCorner;
+            _topLeftCorner = topLeftCorner;
+            _bottomRightCorner = bottomRightCorner;
+            _color = color;
+            _hoverColor = hoverColor;
+            eventArgs = EventArgs.Empty;
+        }
+        public Button(string[] values, Point topLeftCorner, Point bottomRightCorner, RLColor color, RLColor hoverColor)
+        {
+            Values = values;
+            _symbol = ' ';
+            _topLeftCorner = topLeftCorner;
+            _bottomRightCorner = bottomRightCorner;
             _color = color;
             _hoverColor = hoverColor;
             eventArgs = EventArgs.Empty;
         }
 
-        public  void Draw(RLConsole console, bool isHovered)
+        public virtual void Draw(RLConsole console, bool isHovered)
         {
             RLColor color;
             if (isHovered)
@@ -68,18 +88,29 @@ namespace Projet.UI
             }
             console.SetBackColor(TopLeftCorner.X, TopLeftCorner.Y, Width, Height, color);
             string value;
-            int displayX;
-            if(Value == "")
+            if(Values == null || Values.Length == 1)
             {
-                value = _symbol.ToString();
-                displayX = TopLeftCorner.X + Width / 2;
+                if(Values == null)
+                {
+                    value = _symbol.ToString();
+                }
+                else
+                {
+                    value = Values[0];
+                }
+                console.Print(TopLeftCorner.X + Game.GetCenterOffset(Width, value.Length), TopLeftCorner.Y + Game.GetEvenlySpacedOffset(Height, 1), value, Colors.Text);
             }
             else
             {
-                value = Value;
-                displayX = (TopLeftCorner.X + BottomRightCorner.X - value.Length) / 2;
+                int offset = Game.GetEvenlySpacedOffset(Height, Values.Length);
+                
+                int i = 1;
+                foreach (string text in Values)
+                {
+                    console.Print(TopLeftCorner.X + Game.GetCenterOffset(Width, text.Length), TopLeftCorner.Y + (offset+1) * i, text, Colors.Text);
+                    i++;
+                }
             }
-            console.Print(displayX, (BottomRightCorner.Y +   TopLeftCorner.Y)/2 , value, Colors.Text);
             CellSelection.CreateRoomWalls(TopLeftCorner, BottomRightCorner - TopLeftCorner, 179, 196, 218, 191, 192, 217, console);
         }
 

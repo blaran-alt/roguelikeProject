@@ -17,7 +17,7 @@ namespace Projet.Core
             DefenseChance = 40;
             Gold = 0;
             Health = 20;
-            MaxHealth = 100;
+            MaxHealth = 1;
             Name = "Rogue";
             Speed = 10;
             Symbols = new int[] { 64, 251, 1, 2,  1, 251 };

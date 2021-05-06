@@ -237,7 +237,7 @@ namespace Projet.Systems
         {
             if (defender is Player)
             {
-                Game.MessageLog.Add($"  {defender.Name} was killed, GAME OVER MAN!");
+                Game.MessageLog.Add($"{defender.Name} was killed, GAME OVER MAN!");
                 Game.GameOver();
             }
             else if (defender is Monster)
