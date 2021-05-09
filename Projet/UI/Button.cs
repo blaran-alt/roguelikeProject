@@ -66,13 +66,13 @@ namespace Projet.UI
         public virtual void Draw(RLConsole console, bool isHovered)
         {
             RLColor color;
-            if (isHovered)
-            {
-                color = _hoverColor;
-            }
-            else if (IsDisabled)
+            if (IsDisabled)
             {
                 color = _disabledColor;
+            }
+            else if (isHovered)
+            {
+                color = _hoverColor;
             }
             else
             {

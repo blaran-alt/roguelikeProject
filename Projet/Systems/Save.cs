@@ -36,6 +36,10 @@ namespace Projet.Systems
                 last = true;
                 while((line = streamReader.ReadLine()) != null)
                 {
+                    if (line.Length == 0)
+                    {
+                        continue;
+                    }
                     if(!loadLevels && line[0] == '.')
                     {
                         if(i == saveIndex)
@@ -66,7 +70,7 @@ namespace Projet.Systems
             Name = name;
             using (StreamWriter streamWriter = File.AppendText("Saves.txt"))
             {
-                streamWriter.WriteLine("." + Name);
+                streamWriter.WriteLine("\n." + Name);
                 foreach (int seed in Seeds)
                 {
                     streamWriter.WriteLine(seed);

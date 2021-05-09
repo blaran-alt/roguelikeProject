@@ -204,7 +204,7 @@ namespace Projet
 
         public static void SaveData(object sender, EventArgs args)
         {
-            (sender as TextArea).IsDisabled = false;
+            (sender as TextArea).IsDisabled = true;
             MenuEventArgs menuArgs = args as MenuEventArgs;
             _save.SaveInFile(menuArgs.Value.ToString());
         }

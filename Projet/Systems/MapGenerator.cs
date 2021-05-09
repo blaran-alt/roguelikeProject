@@ -67,7 +67,7 @@ namespace Projet.Systems
             var numberOfMonsters = Dice.Roll(minMonsterNb.ToString() + "D" + maxMonsterNb.ToString());
             for (int i = 0; i < numberOfMonsters; i++)
             {
-                string monsterName = _existingMonsters[Dice.Roll("2D" + Game.Level.ToString() + "K1") - 1];
+                string monsterName = _existingMonsters[Dice.Roll("1D" + Game.Level.ToString()) - 1];
                 // Find a random walkable location in the room to place the monster
                 Point randomRoomLocation = _map.GetRandomWalkableLocationInRoom(spawZone);
                 // It's possible that the room doesn't have space to place a monster
@@ -78,7 +78,6 @@ namespace Projet.Systems
                     switch (monsterName)
                     {
                         case "Coupeur":
-                            Console.WriteLine("coupeur spawned");
                             monster = Coupeur.Create(Game.Level);
                             break;
                         case "Bodybuilder":

@@ -48,15 +48,16 @@ namespace Projet.UI
 
         public override void Draw(RLConsole console, bool isHovered)
         {
+            submitButton.IsDisabled = IsDisabled;
             submitButton.Draw(console, isHovered);
             RLColor color;
-            if (isHovered)
-            {
-                color = _hoverColor;
-            }
-            else if (IsDisabled)
+            if (IsDisabled)
             {
                 color = RLColor.Gray;
+            }
+            else if (isHovered)
+            {
+                color = _hoverColor;
             }
             else
             {
