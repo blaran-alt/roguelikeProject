@@ -11,6 +11,5 @@ namespace Projet.Interfaces
         string Name { get; set; }
         int EffectCode { get; set; }
         int Quantity { get; set; }
-        bool Dropped { get; set; }
     }
 }

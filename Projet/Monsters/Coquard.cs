@@ -16,7 +16,7 @@ namespace Projet.Monsters
             int health = Dice.Roll("2D5");
             return new Coquard
             {
-                Attack = Dice.Roll("1D3") + level / 3,
+                Attack = Dice.Roll("2D1") + level / 3,
                 AttackChance = Dice.Roll("25D3"),
                 Awareness = 10,
                 Color = RLColor.White,
@@ -27,8 +27,30 @@ namespace Projet.Monsters
                 MaxHealth = 7,
                 Name = "Coquard",
                 Speed = 20,
-                Symbols = new int[] { 260, 261, 261, 262 }
+                Symbols = new int[] { 260, 261, 262 }
             };
+        }
+
+        private int timeSinceLastBlink = 0;
+
+        protected override int GetNextAnimation(bool nextAnimation)
+        {
+            int animation = Symbols[AnimationIndex];
+            if (nextAnimation && ++AnimationIndex >= Symbols.Length - 1)
+            {
+                AnimationIndex = 0;
+            }
+            if(Dice.Roll("7D5-" + timeSinceLastBlink) < 2)
+            {
+                animation = Symbols[2];
+                timeSinceLastBlink = 0;
+
+            }
+            else
+            {
+                timeSinceLastBlink++;
+            }
+            return animation;
         }
     }
 }

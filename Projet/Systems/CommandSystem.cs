@@ -6,7 +6,7 @@ using System.Text;
 using Projet.Interfaces;
 using RogueSharp;
 using Projet.Items;
-
+using Projet.Monsters;
 
 namespace Projet.Systems
 {
@@ -61,12 +61,11 @@ namespace Projet.Systems
                 {
                     if (Game.Inventory.PickUp(item))
                     {
-                        Game.MessageLog.Add($"{Game.Player.Name} picked up {item.Quantity} {item.Name}");
                         Game.Map.RemoveItem(item);
                     }
                     else
                     {
-                        Game.MessageLog.Add($"You can't pick up this {item.Name}, your inventory must be full");
+                        Game.MessageLog.Add($"Vous ne pouvez pas rammassez cette {item.Name}, votre inventaire doit être plein");
                     }
                 }
                 return true;
@@ -89,7 +88,6 @@ namespace Projet.Systems
             IsPlayerTurn = false;
         }
 
-        private int speedBoostTimer = 5;
 
         public void ActivateMonsters()
         {
@@ -99,14 +97,6 @@ namespace Projet.Systems
                 IsPlayerTurn = true;
                 Game.SchedulingSystem.Add(Game.Player);
                 Player player = scheduleable as Player;
-                if(player.Speed == 5)
-                {
-                    if(--speedBoostTimer == 0)
-                    {
-                        player.Speed = 10;
-                        speedBoostTimer = 5;
-                    }
-                }
             }
             else
             {
@@ -123,7 +113,7 @@ namespace Projet.Systems
 
         public void MoveMonster(Monster monster, ICell cell)
         {
-            if (!Game.Map.SetActorPosition(monster, cell.X, cell.Y))
+            if (!Game.Map.SetActorPosition(monster, cell.X, cell.Y) && !(monster is Bodybuilder))
             {
                 if (Game.Player.X == cell.X && Game.Player.Y == cell.Y)
                 {
@@ -148,6 +138,10 @@ namespace Projet.Systems
             }
 
             int damage = hits - blocks;
+            if(damage > 0 && attacker is Coquard && defender is Player player && defender.Speed <= 10)
+            {
+                player.AffectSpeed(- 3, 5);
+            }
 
             ResolveDamage(defender, damage);
         }
@@ -157,7 +151,7 @@ namespace Projet.Systems
         {
             int hits = 0;
 
-            attackMessage.AppendFormat("{0} attacks {1} and rolls: ", attacker.Name, defender.Name);
+            attackMessage.AppendFormat("{0} attaque {1} ", attacker.Name, defender.Name);
 
             // Roll a number of 100-sided dice equal to the Attack value of the attacking actor
             DiceExpression attackDice = new DiceExpression().Dice(attacker.Attack, 100);
@@ -166,7 +160,6 @@ namespace Projet.Systems
             // Look at the face value of each single die that was rolled
             foreach (TermResult termResult in attackResult.Results)
             {
-                attackMessage.Append(termResult.Value + ", ");
                 // Compare the value to 100 minus the attack chance and add a hit if it's greater
                 if (termResult.Value >= 100 - attacker.AttackChance)
                 {
@@ -184,8 +177,8 @@ namespace Projet.Systems
 
             if (hits > 0)
             {
-                attackMessage.AppendFormat("scoring {0} hits.", hits);
-                defenseMessage.AppendFormat("  {0} defends and rolls: ", defender.Name);
+                attackMessage.AppendFormat(" et lui inflige {0} dégâts.", hits);
+                defenseMessage.AppendFormat(" Mais {0} se défend et ", defender.Name);
 
                 // Roll a number of 100-sided dice equal to the Defense value of the defendering actor
                 DiceExpression defenseDice = new DiceExpression().Dice(defender.Defense, 100);
@@ -201,11 +194,11 @@ namespace Projet.Systems
                         blocks++;
                     }
                 }
-                defenseMessage.AppendFormat("resulting in {0} blocks.", blocks);
+                defenseMessage.AppendFormat("bloque {0} coups.", blocks);
             }
             else
             {
-                attackMessage.Append("and misses completely.");
+                attackMessage.Append("mais rate completement.");
             }
 
             return blocks;
@@ -218,7 +211,7 @@ namespace Projet.Systems
             {
                 defender.Health -= damage;
 
-                Game.MessageLog.Add($"  {defender.Name} was hit for {damage} damage");
+                Game.MessageLog.Add($"{defender.Name} prend donc {damage} dégâts");
 
                 if (defender.Health <= 0)
                 {
@@ -228,7 +221,7 @@ namespace Projet.Systems
             }
             else
             {
-                Game.MessageLog.Add($"  {defender.Name} blocked all damage");
+                Game.MessageLog.Add($"  {defender.Name} bloque tous les coups");
             }
         }
 
@@ -237,7 +230,7 @@ namespace Projet.Systems
         {
             if (defender is Player)
             {
-                Game.MessageLog.Add($"{defender.Name} was killed, GAME OVER MAN!");
+                Game.MessageLog.Add($"L'hôte est décédé, GAME OVER MAN!");
                 Game.GameOver();
             }
             else if (defender is Monster)
@@ -245,7 +238,6 @@ namespace Projet.Systems
                 Game.Map.RemoveMonster((Monster)defender);
                 Gold gold = new Gold(defender.Gold, defender.X, defender.Y);
                 Game.Map.AddItem(gold);
-                Game.MessageLog.Add($"  {defender.Name} died and dropped {defender.Gold} gold");
             }
         }
     }

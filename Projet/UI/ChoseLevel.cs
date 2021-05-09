@@ -11,12 +11,9 @@ namespace Projet.UI
 {
     public class ChoseLevel : Menu
     {
-        private Save _save;
 
         public ChoseLevel(int width, int height, Save save) : base(new List<Button>(), "Choisis un niveau", width, height)
         {
-            _save = save;
-
             int buttonsHeight = Math.Min(((height - Game.GetProportionnalVerticalSize(50)) - (save.Seeds.Count - 1) * 2) * 4 / save.Seeds.Count, 7);
             Point topLeft = Game.GetProportionnalSize(1, 30);
 
@@ -42,7 +39,7 @@ namespace Projet.UI
         private void OnSeedChosen(object sender, EventArgs args)
         {
             MenuEventArgs menuArgs = args as MenuEventArgs;
-            Game.StartWithSeed(menuArgs.IntValue);
+            Game.StartWithSeed(this, menuArgs);
         }
     }
 }

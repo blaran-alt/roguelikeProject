@@ -16,7 +16,7 @@ namespace Projet.Core
 
         public Terminal(int x, int y, RLColor color) : base((char)10, x, y, color)
         {
-            isActive = Dice.Roll("2D2") > 2;
+            isActive = Dice.Roll("2D3") < 3;
         }
 
         public override void Draw(RLConsole console, IMap map, bool animation)

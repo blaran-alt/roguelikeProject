@@ -12,21 +12,19 @@ namespace Projet.Items
     {
         private readonly RLColor[] keyColors = new RLColor[] {Colors.Gold, RLColor.Gray, RLColor.White };
 
-        public Key(bool dropped, int x, int y, int effectCode)
+        public Key(int x, int y, int effectCode)
         {
             Name = "Clef";
             Quantity = 1;
-            Dropped = dropped;
             X = x;
             Y = y;
             EffectCode = effectCode;
             Color = keyColors[effectCode];
             Symbols = new int[]{'µ'};
         }
-        public Key(int effectCode) : this(false, 0, 0, effectCode) { }
-        public Key(int effectCode, int x, int y) : this(true, x, y, effectCode) { }
+        public Key(int effectCode) : this(0, 0, effectCode) { }
 
-        public override void AlternateDrawInContainer(RLConsole console, int x, int y)
+        public override void Draw(RLConsole console, int x, int y)
         {
             console.Set(x, y, Color, null, Symbols[0]);
             console.Print(x + 1, y, $" - {EffectCode}", Colors.Text);

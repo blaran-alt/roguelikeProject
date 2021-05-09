@@ -12,8 +12,7 @@ namespace Projet.Systems
     {
         public int X { get; set; }
         public int Y { get; set; }
-        public int SelectedItemIndex { get { return (Y - _defaultY) / 2; }}
-        public int AlternateSelectedItemIndex { get; set; }
+        public int SelectedItemIndex { get; set; }
         private readonly int _defaultX;
         private readonly int _defaultY;
 
@@ -68,7 +67,7 @@ namespace Projet.Systems
         {
             X = _defaultX;
             Y = _defaultY;
-            AlternateSelectedItemIndex = 0;
+            SelectedItemIndex = 0;
         }
     }
 }

@@ -47,6 +47,7 @@ namespace Projet.UI
                 }
             }
             TextArea input = new TextArea("0000", Game.GetProportionnalSize(20,90), Game.GetProportionnalSize(80, 95), Colors.AlternateLightest, Colors.AlternateLighter);
+            input.OnSubmit += Game.StartWithSeed;
             
             _buttons.Add(input);
         }
@@ -60,13 +61,8 @@ namespace Projet.UI
         private void OnSaveChosen(Object sender, EventArgs args)
         {
             MenuEventArgs menuArgs = args as MenuEventArgs;
-            Save save = saves.FirstOrDefault(s => s.Name == menuArgs.StringValue);
+            Save save = saves.FirstOrDefault(s => s.Name == menuArgs.Value.ToString());
             Game.OpenSaveMenu(save);
-        }
-
-        private void OnSeedChosen(Object sender, EventArgs args)
-        {
-            MenuEventArgs menuArgs = args as MenuEventArgs;
         }
     }
 }

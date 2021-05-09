@@ -14,7 +14,6 @@ namespace Projet.Core
         // IItem
         public string Name { get; set; }
         public int EffectCode { get; set; }
-        public bool Dropped { get; set; }
         public int Quantity { get; set; }
 
         // IDrawable
@@ -43,20 +42,15 @@ namespace Projet.Core
             }
         }
 
-        public void DrawInContainer(RLConsole console, int x, int y)
-        {
-            console.Set(x, y, Color, null, Symbols[0]);
-            console.Print(x + 1, y,$" - {Quantity}", Colors.Text);
-        }
-
         public virtual bool Use()
         {
             return false;
         }
 
-        public virtual void AlternateDrawInContainer(RLConsole console,int x, int y)
+        public virtual void Draw(RLConsole console,int x, int y)
         {
-            DrawInContainer(console, x, y);
+            console.Set(x, y, Color, null, Symbols[0]);
+            console.Print(x + 1, y, $" - {Quantity}", Colors.Text);
         }
 
         public bool IsEqual(Item item)

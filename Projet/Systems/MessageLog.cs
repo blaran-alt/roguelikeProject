@@ -6,21 +6,28 @@ using RLNET;
 using RogueSharp;
 using Projet.Core;
 using Projet.Interfaces;
+using System.Threading;
 
 namespace Projet.Systems
 {
     public class MessageLog
     {
         // Define the maximum number of lines to store
-        private static readonly int _maxLines = 6;
+        private static int _maxLines;
 
         // Use a Queue to keep track of the lines of text
         // The first line added to the log will also be the first removed
         private readonly Queue<string> _lines;
 
+        private string[] _asyncLines;
+
         public MessageLog()
         {
             _lines = new Queue<string>();
+        }
+        public MessageLog(int maxLines) : this()
+        {
+            _maxLines = maxLines;
         }
 
         // Add a line to the MessageLog queue
@@ -33,6 +40,24 @@ namespace Projet.Systems
             {
                 _lines.Dequeue();
             }
+        }
+
+        private void AsyncAddMessages()
+        {
+            foreach(string line in _asyncLines)
+            {
+                Add(line);
+                Thread.Sleep(5000);
+            }
+            _asyncLines = null;
+        }
+
+        public void Add(string[] messages)
+        {
+            Thread thread = new Thread(AsyncAddMessages);
+            thread.IsBackground = true;
+            _asyncLines = messages;
+            thread.Start();
         }
 
         // Draw each line of the MessageLog queue to the console

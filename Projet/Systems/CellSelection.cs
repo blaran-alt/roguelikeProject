@@ -102,13 +102,7 @@ namespace Projet.Systems
 
         public static void DrawCellsAroudPoint(Point point, SelectionType selection, int selectionSize, bool highlightWalls, RLConsole console)
         {
-            foreach (ICell cell in SelectCellsAroundPoint(point, selection, selectionSize, highlightWalls))
-            {
-                if (Game.Map.IsInMap(cell) && (highlightWalls || cell.IsExplored))
-                {
-                    console.SetBackColor(cell.X, cell.Y, RLColor.Yellow);
-                }
-            }
+            DrawCellsAroudPoint(point, selection, selectionSize, highlightWalls, console, RLColor.Yellow);
         }
         public static void DrawCellsAroudPoint(Point point, SelectionType selection, int selectionSize, bool highlightWalls, RLConsole console, RLColor color)
         {
@@ -117,6 +111,46 @@ namespace Projet.Systems
                 if (Game.Map.IsInMap(cell) && (highlightWalls || cell.IsExplored))
                 {
                     console.SetBackColor(cell.X, cell.Y, color);
+                }
+            }
+        }
+
+        public static void DrawPath(Point start, Point end, RLConsole console)
+        {
+            GameMap map = Game.Map;
+            ICell startCell = map.GetCell(start.X, start.Y);
+            ICell endCell = map.GetCell(end.X, end.Y);
+
+            bool startIsWalkable = startCell.IsWalkable;
+            bool endIsWalkable = endCell.IsWalkable;
+            map.SetIsWalkable(startCell.X, startCell.Y, true);
+            map.SetIsWalkable(endCell.X, endCell.Y, true);
+
+            PathFinder pathFinder = new PathFinder(map);
+            Path path = null;
+            bool pathFound = true;
+            try
+            {
+                path = pathFinder.ShortestPath(startCell, endCell);
+            }
+            catch (PathNotFoundException)
+            {
+                pathFound = false;
+            }
+
+            map.SetIsWalkable(startCell.X, startCell.Y, startIsWalkable);
+            map.SetIsWalkable(endCell.X, endCell.Y, endIsWalkable);
+
+            if (pathFound)
+            {
+                ICell cell = path.Start;
+                while (cell != null)
+                {
+                    if (cell != path.Start && cell != path.End)
+                    {
+                        console.SetBackColor(cell.X, cell.Y, RLColor.Yellow);
+                    }
+                    cell = path.TryStepForward();
                 }
             }
         }

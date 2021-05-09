@@ -35,6 +35,22 @@ namespace Projet.Behaviors
 
             if (monster.TurnsAlerted.HasValue)
             {
+                monsterFov.ComputeFov(monster.X, monster.Y, monster.Awareness, true);
+
+                int deltaX = player.X - monster.X;
+                int deltaY = player.Y - monster.Y;
+                if (Math.Abs(deltaX) == 1 && Math.Abs(deltaY)  == 1)
+                {
+                    commandSystem.MoveMonster(monster, map.GetCell(monster.X - deltaX, monster.Y - deltaY));
+                    return true;
+                }
+
+                if(map.IsInFov(player.X, player.Y) && Math.Abs(deltaX) <= 3 && Math.Abs(deltaY) <= 3)
+                {
+                    commandSystem.Attack(monster, player);
+                    return true;
+                }
+
                 // Before we find a path, make sure to make the monster and player Cells walkable
                 map.SetIsWalkable(monster.X, monster.Y, true);
                 map.SetIsWalkable(player.X, player.Y, true);
@@ -42,35 +58,21 @@ namespace Projet.Behaviors
                 PathFinder pathFinder = new PathFinder(map);
                 Path path = null;
 
-                Path shortestPath = null;
-                int minPathLenght = int.MaxValue;
                 bool pathFound = true;
-                foreach(ICell cell in map.GetBorderCellsInCircle(player.X, player.Y, 3))
+                try
                 {
-                    try
-                    {
-                        path = pathFinder.ShortestPath(map.GetCell(monster.X, monster.Y), map.GetCell(cell.X, cell.Y));
-                        if(path.Length < minPathLenght)
-                        {
-                            shortestPath = path;
-                            minPathLenght = path.Length;
-                        }
-                    }
-                    catch (PathNotFoundException)
-                    {
-                        // The monster can see the player, but cannot find a path to him
-                        // This could be due to other monsters blocking the way
-                        pathFound = false;
-                    }
+                    path = pathFinder.ShortestPath(map.GetCell(monster.X, monster.Y), map.GetCell(player.X, player.Y));
+                }
+                catch (PathNotFoundException)
+                {
+                    // The monster can see the player, but cannot find a path to him
+                    // This could be due to other monsters blocking the way
+                    pathFound = false;
                 }
                 if (!pathFound)
                 {
                     // Add a message to the message log that the monster is waiting
-                    Game.MessageLog.Add($"{monster.Name} waits for a turn");
-                }
-                else
-                {
-                    path = shortestPath;
+                    Game.MessageLog.Add($"{monster.Name} attend le prochain tour");
                 }
                 // Don't forget to set the walkable status back to false
                 map.SetIsWalkable(monster.X, monster.Y, false);

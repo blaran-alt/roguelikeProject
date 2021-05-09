@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using RogueSharp;
 using RLNET;
 using Projet.Systems;
+using RogueSharp.DiceNotation;
 
 namespace Projet.Core
 {
@@ -13,10 +14,11 @@ namespace Projet.Core
     {
         public CortexMap() : base()
         {
-            LightsOn = false;
+            ObstacleFree = false;
+
         }
 
-        public override bool NextLevelCondition()
+        protected override bool NextLevelCondition()
         {
             foreach (Connection connection in Connections)
             {
@@ -30,8 +32,17 @@ namespace Projet.Core
 
         public override void Draw(RLConsole mapConsole, RLConsole statConsole, bool NextAnimation)
         {
-            LightsOn = StairsDown.IsOpen;
+            ObstacleFree = StairsDown.IsOpen;
             base.Draw(mapConsole, statConsole, NextAnimation);
+        }
+
+        protected override void DrawPuzzlePieces(RLConsole console)
+        {
+            foreach (Connection connection in Connections)
+            {
+                connection.TerminalA.Draw(console, this, false);
+                connection.TerminalB.Draw(console, this, false);
+            }
         }
     }
 }

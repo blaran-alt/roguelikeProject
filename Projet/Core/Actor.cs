@@ -173,17 +173,23 @@ namespace Projet.Core
             // Only draw the actor with the color and symbol when they are in field-of-view
             if (map.IsInFov(X, Y))
             {
-                console.Set(X, Y, Color, Colors.FloorBackgroundFov, Symbols[AnimationIndex]);
-                if (animation && ++AnimationIndex >= Symbols.Length)
-                {
-                    AnimationIndex = 0;
-                }
+                console.Set(X, Y, Color, Colors.FloorBackgroundFov, GetNextAnimation(animation));
             }
-            else if(Game.Map.LightsOn)
+            else if(Game.Map.ObstacleFree)
             {
                 // When not in field-of-view just draw a normal floor
                 console.Set(X, Y, Colors.Floor, Colors.FloorBackground, '.');
             }
+        }
+
+        protected virtual int GetNextAnimation(bool nextAnimation)
+        {
+            int animation = Symbols[AnimationIndex];
+            if (nextAnimation && ++AnimationIndex >= Symbols.Length)
+            {
+                AnimationIndex = 0;
+            }
+            return animation;
         }
     }
 }

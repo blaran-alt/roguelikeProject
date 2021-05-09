@@ -41,7 +41,7 @@ namespace Projet.Core
                 return;
             }
 
-            if (IsOpen)
+            if (!IsUp && IsOpen)
             {
                 Symbols = new int[] { '>' };
             }
@@ -51,7 +51,7 @@ namespace Projet.Core
                 Color = Colors.Player;
                 console.Set(X, Y, Color, null, Symbols[0]);
             }
-            else if(Game.Map.LightsOn)
+            else if(Game.Map.ObstacleFree)
             {
                 Color = Colors.Floor;
                 console.Set(X, Y, Color, null, Symbols[0]);

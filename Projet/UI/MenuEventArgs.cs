@@ -8,19 +8,11 @@ namespace Projet.UI
 {
     public class MenuEventArgs : EventArgs
     {
-        public bool BoolValue { get; set; }
-        public int IntValue { get; set; }
-        public string StringValue { get; set; }
+        public object Value { get; set; }
 
-        public MenuEventArgs(bool value, int index, string name)
+        public MenuEventArgs(object value)
         {
-            BoolValue = value;
-            IntValue = index;
-            StringValue = name;
+            Value = value;
         }
-        public MenuEventArgs() : this (false, 0, "") { }
-        public MenuEventArgs(int index) : this(false, index, "") { }
-        public MenuEventArgs(string name) : this(false, 0, name) { }
-        public MenuEventArgs(bool value) : this(value, 0, "") { }
     }
 }

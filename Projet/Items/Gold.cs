@@ -10,18 +10,16 @@ namespace Projet.Items
 {
     public class Gold : Item
     {
-        public Gold(int quantity, bool dropped, int x, int y)
+        public Gold(int quantity, int x, int y)
         {
             Name = "Or";
             EffectCode = -1;
-            Dropped = dropped;
             Quantity = quantity;
             Color = Colors.Gold;
             Symbols = new int[] { '0' };
             X = x;
             Y = y;
         }
-        public Gold(int quantity, int x, int y) : this(quantity, true, x, y) { }
-        public Gold(int quantity) : this(quantity, false, 0, 0) { }
+        public Gold(int quantity) : this(quantity, 0, 0) { }
     }
 }

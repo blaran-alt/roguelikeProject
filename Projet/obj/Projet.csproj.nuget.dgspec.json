@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\hugod\\source\\repos\\roguelikeProject\\Projet\\Projet.csproj": {}
+    "C:\\Users\\hugod\\Source\\Repos\\roguelikeProject\\Projet\\Projet.csproj": {}
   },
   "projects": {
-    "C:\\Users\\hugod\\source\\repos\\roguelikeProject\\Projet\\Projet.csproj": {
+    "C:\\Users\\hugod\\Source\\Repos\\roguelikeProject\\Projet\\Projet.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\hugod\\source\\repos\\roguelikeProject\\Projet\\Projet.csproj",
+        "projectUniqueName": "C:\\Users\\hugod\\Source\\Repos\\roguelikeProject\\Projet\\Projet.csproj",
         "projectName": "Projet",
-        "projectPath": "C:\\Users\\hugod\\source\\repos\\roguelikeProject\\Projet\\Projet.csproj",
+        "projectPath": "C:\\Users\\hugod\\Source\\Repos\\roguelikeProject\\Projet\\Projet.csproj",
         "packagesPath": "C:\\Users\\hugod\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\hugod\\source\\repos\\roguelikeProject\\Projet\\obj\\",
+        "outputPath": "C:\\Users\\hugod\\Source\\Repos\\roguelikeProject\\Projet\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\hugod\\AppData\\Roaming\\NuGet\\NuGet.Config",

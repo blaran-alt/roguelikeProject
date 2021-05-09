@@ -12,7 +12,7 @@ namespace Projet.UI
     public class Button
     {
         public string[] Values { get; set; }
-        protected char _symbol;
+        public bool IsDisabled;
         public event EventHandler<EventArgs> OnClick;
         public EventArgs eventArgs;
         protected Point _topLeftCorner;
@@ -29,6 +29,7 @@ namespace Projet.UI
         }
         protected RLColor _color;
         protected RLColor _hoverColor;
+        protected RLColor _disabledColor;
         protected int Width
         {
             get
@@ -44,35 +45,22 @@ namespace Projet.UI
             }
         }
 
-        public Button(string value, Point topLeftCorner, Point bottomRightCorner, RLColor color, RLColor hoverColor)
+        public Button(string value, Point topLeftCorner, Point bottomRightCorner, RLColor color, RLColor hoverColor) : this (new string[] { value }, topLeftCorner, bottomRightCorner, color, hoverColor)
         {
-            Values = new string[] { value };
-            _symbol = ' ';
-            _topLeftCorner = topLeftCorner;
-            _bottomRightCorner = bottomRightCorner;
-            _color = color;
-            _hoverColor = hoverColor;
-            eventArgs = EventArgs.Empty;
         }
-        public Button(char symbol, Point topLeftCorner, Point bottomRightCorner, RLColor color, RLColor hoverColor)
+        public Button(string value, Point topLeftCorner, Point bottomRightCorner, RLColor color, RLColor hoverColor, RLColor disabledColor) : this(new string[] { value }, topLeftCorner, bottomRightCorner, color, hoverColor)
         {
-            Values = null;
-            _symbol = symbol;
-            _topLeftCorner = topLeftCorner;
-            _bottomRightCorner = bottomRightCorner;
-            _color = color;
-            _hoverColor = hoverColor;
-            eventArgs = EventArgs.Empty;
+            _disabledColor = disabledColor;
         }
         public Button(string[] values, Point topLeftCorner, Point bottomRightCorner, RLColor color, RLColor hoverColor)
         {
             Values = values;
-            _symbol = ' ';
             _topLeftCorner = topLeftCorner;
             _bottomRightCorner = bottomRightCorner;
             _color = color;
             _hoverColor = hoverColor;
             eventArgs = EventArgs.Empty;
+            IsDisabled = false;
         }
 
         public virtual void Draw(RLConsole console, bool isHovered)
@@ -82,22 +70,19 @@ namespace Projet.UI
             {
                 color = _hoverColor;
             }
+            else if (IsDisabled)
+            {
+                color = _disabledColor;
+            }
             else
             {
                 color = _color;
             }
             console.SetBackColor(TopLeftCorner.X, TopLeftCorner.Y, Width, Height, color);
             string value;
-            if(Values == null || Values.Length == 1)
+            if(Values.Length == 1)
             {
-                if(Values == null)
-                {
-                    value = _symbol.ToString();
-                }
-                else
-                {
-                    value = Values[0];
-                }
+                value = Values[0];
                 console.Print(TopLeftCorner.X + Game.GetCenterOffset(Width, value.Length), TopLeftCorner.Y + Game.GetEvenlySpacedOffset(Height, 1), value, Colors.Text);
             }
             else
@@ -116,7 +101,10 @@ namespace Projet.UI
 
         public virtual void Click()
         {
-            OnClick?.Invoke(this, eventArgs);
+            if (!IsDisabled)
+            {
+                OnClick?.Invoke(this, eventArgs);
+            }
         }
     }
 }

@@ -57,3 +57,4 @@ C:\Users\hugod\source\repos\roguelikeProject\Projet\bin\Debug\net461\RLNET.dll
 C:\Users\hugod\source\repos\roguelikeProject\Projet\bin\Debug\net461\RogueSharp.dll
 C:\Users\hugod\source\repos\roguelikeProject\Projet\bin\Debug\net461\SimplexNoise.dll
 C:\Users\hugod\source\repos\roguelikeProject\Projet\obj\Debug\net461\Projet.csproj.CopyComplete
+C:\Users\hugod\Source\Repos\roguelikeProject\Projet\bin\Debug\net461\ExtendTestBisInverted.png

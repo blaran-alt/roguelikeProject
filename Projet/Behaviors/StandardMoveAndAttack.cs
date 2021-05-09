@@ -27,7 +27,7 @@ namespace Projet.Behaviors
                 monsterFov.ComputeFov(monster.X, monster.Y, monster.Awareness, true);
                 if (monsterFov.IsInFov(player.X, player.Y))
                 {
-                    Game.MessageLog.Add($"{monster.Name} is eager to fight {player.Name}");
+                    Game.MessageLog.Add($"{monster.Name} a envie de combattre {player.Name}");
                     monster.TurnsAlerted = 1;
                 }
             }
@@ -54,6 +54,7 @@ namespace Projet.Behaviors
                 }
 
                 // Don't forget to set the walkable status back to false
+                
                 map.SetIsWalkable(monster.X, monster.Y, false);
                 map.SetIsWalkable(player.X, player.Y, false);
 

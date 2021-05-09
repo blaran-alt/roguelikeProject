@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Projet.Systems;
 using System.Runtime.CompilerServices;
+using RogueSharp.DiceNotation;
 
 namespace Projet.Core
 {
@@ -22,32 +23,35 @@ namespace Projet.Core
         UpRight = 9
     }
 
-    public class GameMap : Map
+    public abstract class GameMap : Map
     {
-        public List<Rectangle> Rooms { get; set; }
-        public List<Door> Doors { get; set; }
-        private List<Item> Items { get; set; }
-        private readonly List<Monster> _monsters;
-        public List<Box> Boxs { get; set; }
-
+        protected List<Item> Items { get; set; }
+        protected readonly List<Monster> _monsters;
         public Stairs StairsUp { get; set; }
         public Stairs StairsDown { get; set; }
 
-        public bool LightsOn { get; protected set; }
+        public bool ObstacleFree { get; protected set; }
+
+        //CortexMap
         public List<Connection> Connections { get; set; }
         public int nbConnections = 5;
+
+        //NeuronMap
+        public List<Room> Rooms { get; set; }
+
+        //InvertedMap
+        protected List<Box> Boxs { get; set; }
+
 
         public GameMap()
         {
             Game.SchedulingSystem.Clear();
-            // Initialize the list of rooms when we create a new DungeonMap
-            Rooms = new List<Rectangle>();
             _monsters = new List<Monster>();
-            Doors = new List<Door>();
             Items = new List<Item>();
+            Rooms = new List<Room>();
             Boxs = new List<Box>();
             Connections = new List<Connection>();
-            LightsOn = true;
+            ObstacleFree = true;
         }
 
         // The Draw method will be called each time the map is updated
@@ -59,23 +63,18 @@ namespace Projet.Core
             {
                 SetConsoleSymbolForCell(mapConsole, cell);
             }
-            // Places the doors
-            foreach (Door door in Doors)
-            {
-                door.Draw(mapConsole, this, false);
-            }
+
             // Draws the 2 stairs in the map
             StairsUp.Draw(mapConsole, this, false);
             StairsDown.Draw(mapConsole, this, false);
+
+
+            DrawPuzzlePieces(mapConsole);
+
+
             foreach (Item item in Items)
             {
                 item.Draw(mapConsole, this, false);
-            }
-            //Draw the terminals
-            foreach (Connection connection in Connections)
-            {
-                connection.TerminalA.Draw(mapConsole, this, false);
-                connection.TerminalB.Draw(mapConsole, this, false);
             }
 
             // Places the monsters after the doors,stairs and items so they appear above them
@@ -89,11 +88,37 @@ namespace Projet.Core
                     i++;
                 }
             }
+        }
 
-            foreach (Box box in Boxs)
+        protected virtual void DrawPuzzlePieces(RLConsole console)
+        {
+        }
+
+        public Cell GetCLosestCell(Point boxPos)
+        {
+            Player player = Game.Player;
+            int deltaX = boxPos.X - player.X;
+            int deltaY = boxPos.Y - player.Y;
+
+            ICell cell;
+            if (deltaY == 0 && (cell = GetCell(player.X + Math.Sign(deltaX), player.Y)).IsWalkable)
             {
-                box.Draw(mapConsole, this, false);
+                return (Cell)cell;
             }
+            if(deltaX == 0 && (cell = GetCell(player.X, player.Y + Math.Sign(deltaY))).IsWalkable)
+            {
+                return (Cell)cell;
+            }
+            Point dir = new Point(Math.Sign(deltaX), Math.Sign(deltaY));
+            if((cell = GetCell(player.X + dir.X, player.Y)).IsWalkable)
+            {
+                return (Cell)cell;
+            }
+            if((cell = GetCell(player.X, player.Y + dir.Y)).IsWalkable)
+            {
+                return (Cell)cell;
+            }
+            return null;
         }
 
         protected void SetConsoleSymbolForCell(RLConsole console, Cell cell)
@@ -112,52 +137,22 @@ namespace Projet.Core
                 if (cell.IsWalkable)
                 {
                     console.Set(cell.X, cell.Y, Colors.FloorFov, Colors.FloorBackgroundFov, '.');
-
-                    //if (Game.mapGenerator is CortexGenerator generator && generator.HotPath.Any(c => c.X == cell.X && c.Y == cell.Y))
-                    //{
-                    //    console.Set(cell.X, cell.Y, Colors.FloorFov, Colors.Primary, '.');
-                    //    if (generator.startToEndPath.Steps.Any(c => c.X == cell.X && c.Y == cell.Y))
-                    //    {
-                    //        console.Set(cell.X, cell.Y, Colors.FloorFov, RLColor.Red, '.');
-                    //    }
-                    //}
-
-                    //console.Set(cell.X, cell.Y, Colors.FloorFov, Colors.FloorBackgroundFov, ' ' );
-                    //console.Print(cell.X, cell.Y, dijkstraIndeces[cell.X, cell.Y].ToString(), Colors.FloorFov);
                 }
                 else
                 {
                     console.Set(cell.X, cell.Y, Colors.WallFov, Colors.WallBackgroundFov, '#');
-
-                    //if (Game.mapGenerator is CortexGenerator generator && generator.HotPath.Any(c => c.X == cell.X && c.Y == cell.Y))
-                    //{
-                    //    console.Set(cell.X, cell.Y, Colors.WallFov, Colors.Primary, '#');
-                    //    if (generator.startToEndPath.Steps.Any(c => c.X == cell.X && c.Y == cell.Y))
-                    //    {
-                    //        console.Set(cell.X, cell.Y, Colors.FloorFov, RLColor.Red, '.');
-                    //    }
-                    //}
-
-                    //console.Set(cell.X, cell.Y, Colors.WallFov, Colors.WallBackgroundFov, ' ');
-                    //console.Print(cell.X, cell.Y, dijkstraIndeces[cell.X, cell.Y].ToString(), Colors.WallFov);
                 }
             }
             // When a cell is outside of the field of view draw it with darker colors
-            else if(LightsOn)
+            else if(ObstacleFree)
             {
                 if (cell.IsWalkable)
                 {
                     console.Set(cell.X, cell.Y, Colors.Floor, Colors.FloorBackground, '.');
-
-                    //console.Set(cell.X, cell.Y, Colors.Floor, Colors.FloorBackground, ' ');
-                    //console.Print(cell.X, cell.Y, dijkstraIndeces[cell.X, cell.Y].ToString(), Colors.Floor);
                 }
                 else
                 {
                     console.Set(cell.X, cell.Y, Colors.Wall, Colors.WallBackground, '#');
-
-                    //console.Set(cell.X, cell.Y, Colors.Wall, Colors.WallBackground, ' ');
-                    //console.Print(cell.X, cell.Y, dijkstraIndeces[cell.X, cell.Y].ToString(), Colors.Wall);
                 }
             }
         }
@@ -167,7 +162,7 @@ namespace Projet.Core
             Player player = Game.Player;
             // Compute the field-of-view based on the player's location and awareness
             int playerAwareness = player.Awareness;
-            if(!LightsOn)
+            if(!ObstacleFree)
             {
                 playerAwareness -= 7;
             }
@@ -194,8 +189,6 @@ namespace Projet.Core
                 actor.Y = y;
                 // The new cell the actor is on is now not walkable
                 SetIsWalkable(actor.X, actor.Y, false);
-                // Try open a door if one exists here
-                OpenDoor(actor, x, y);
                 // Don't forget to update the field of view if we just repositioned the player
                 if (actor is Player)
                 {
@@ -335,8 +328,6 @@ namespace Projet.Core
         public void AddTerminals(Connection connection)
         {
             Connections.Add(connection);
-            SetIsWalkable(connection.TerminalA.X, connection.TerminalA.Y, false);
-            SetIsWalkable(connection.TerminalB.X, connection.TerminalB.Y, false);
         }
         public Terminal GetTerminalAt(Point coord)
         {
@@ -362,6 +353,106 @@ namespace Projet.Core
             return null;
         }
 
+        public bool CanMoveDownToNextLevel()
+        {
+            Player player = Game.Player;
+            return StairsDown.X == player.X && StairsDown.Y == player.Y && NextLevelCondition();
+        }
+
+        public virtual void MoveDownToNextLevel()
+        {
+            Game.Inventory.UseKeys();
+        }
+
+        public void UpdateExitState()
+        {
+            bool on = NextLevelCondition();
+            if (!ObstacleFree)
+            {
+                ObstacleFree = on;
+                if (on && Game.Level == 1)
+                {
+                    Game.MessageLog.Add(Story.puzzleSolvedTexts);
+                }
+            }
+            StairsDown.IsOpen = on;
+        }
+
+        protected virtual bool NextLevelCondition()
+        {
+            return Game.Inventory.HasKeys();
+        }
+        public virtual Room GetRoom(Cell cell)
+        {
+            return Room.Empty;
+        }
+
+        public bool IsInMap(ICell cell)
+        {
+            return IsInMap(cell.X, cell.Y);
+        }
+        public bool IsInMap(Point cell)
+        {
+            return IsInMap(cell.X, cell.Y);
+        }
+        public bool IsInMap(int x,int y)
+        {
+            return x >= 0 && x < Width && y >= 0 && y < Height;
+        }
+
+        public Point GetRandomWalkableLocationInRoom(Room room)
+        {
+            if (DoesRoomHaveWalkableSpace(room))
+            {
+                if (room.Cells.Count > 0 && Dice.Roll("1D2") == 1)
+                {
+                    return GetRandomWalkableLocationInRoom(room.Cells);
+                }
+                else
+                {
+                    return GetRandomWalkableLocationInRoom(room.BaseRectangle);
+                }
+            }
+            return Point.Zero;
+        }
+
+        public Point GetRandomWalkableLocationInRoom(IEnumerable<Cell> cells)
+        {
+            if (DoesRoomHaveWalkableSpace(cells))
+            {
+                if (cells.Count() > 0)
+                {
+                    for (int i = 0; i < 100; i++)
+                    {
+                        ICell cell = cells.ElementAt(Game.Random.Next(cells.Count() - 1));
+                        if (IsWalkable(cell.X, cell.Y))
+                        {
+                            return new Point(cell.X, cell.Y);
+                        }
+                    }
+                }
+            }
+            return Point.Zero;
+        }
+        public Point GetRandomWalkableLocationInRoom(IEnumerable<ICell> cells)
+        {
+            if (DoesRoomHaveWalkableSpace(cells))
+            {
+                if (cells.Count() > 0)
+                {
+                    for (int i = 0; i < 100; i++)
+                    {
+                        ICell cell = cells.ElementAt(Game.Random.Next(cells.Count() - 1));
+                        if (IsWalkable(cell.X, cell.Y))
+                        {
+                            return new Point(cell.X, cell.Y);
+                        }
+                    }
+                }
+            }
+            return Point.Zero;
+        }
+
         // Look for a random location in the room that is walkable.
         public Point GetRandomWalkableLocationInRoom(Rectangle room)
         {
@@ -383,6 +474,36 @@ namespace Projet.Core
         }
 
         // Iterate through each Cell in the room and return true if any are walkable
+        public bool DoesRoomHaveWalkableSpace(Room room)
+        {
+            if (DoesRoomHaveWalkableSpace(room.Cells))
+            {
+                return true;
+            }
+            return DoesRoomHaveWalkableSpace(room.BaseRectangle);
+        }
+        public bool DoesRoomHaveWalkableSpace(IEnumerable<Cell> cells)
+        {
+            foreach (Cell cell in cells)
+            {
+                if (IsWalkable(cell.X, cell.Y))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        public bool DoesRoomHaveWalkableSpace(IEnumerable<ICell> cells)
+        {
+            foreach (Cell cell in cells)
+            {
+                if (IsWalkable(cell.X, cell.Y))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
         public bool DoesRoomHaveWalkableSpace(Rectangle room)
         {
             for (int x = 1; x <= room.Width - 2; x++)
@@ -396,50 +517,6 @@ namespace Projet.Core
                 }
             }
             return false;
-        }
-
-        public Door GetDoor(int x, int y)
-        {
-            return Doors.SingleOrDefault(d => d.X == x && d.Y == y);
-        }
-
-        // The actor opens the door located at the x,y position
-        private void OpenDoor(Actor actor, int x, int y)
-        {
-            Door door = GetDoor(x, y);
-            if (door != null && !door.IsOpen)
-            {
-                door.IsOpen = true;
-                var cell = GetCell(x, y);
-                // Once the door is opened it should be marked as transparent and no longer block field-of-view
-                SetCellProperties(x, y, true, cell.IsWalkable, cell.IsExplored);
-
-                Game.MessageLog.Add($"{actor.Name} opened a door");
-            }
-        }
-
-        public bool CanMoveDownToNextLevel()
-        {
-            Player player = Game.Player;
-            return StairsDown.X == player.X && StairsDown.Y == player.Y && NextLevelCondition();
-        }
-
-        public virtual bool NextLevelCondition()
-        {
-            return Game.Inventory.HasKeys();
-        }
-
-        public bool IsInMap(ICell cell)
-        {
-            return IsInMap(cell.X, cell.Y);
-        }
-        public bool IsInMap(Point cell)
-        {
-            return IsInMap(cell.X, cell.Y);
-        }
-        public bool IsInMap(int x,int y)
-        {
-            return x >= 0 && x < Width && y >= 0 && y < Height;
         }
     }
 }

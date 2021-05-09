@@ -32,26 +32,13 @@ namespace Projet.Systems
             Selection = new UISelection(2, 4);
         }
 
-        public void AlternateDraw(RLConsole inventoryConsole, RLConsole mapConsole)
+        public void DrawWithEffect(RLConsole inventoryConsole, RLConsole mapConsole)
         {
-            inventoryConsole.Print(Game.GetProportionnalHorizontalSize(25), Game.GetProportionnalHorizontalSize(3), "Clefs", Colors.Text);
-            int j = Game.GetProportionnalHorizontalSize(3) + 2;
-            foreach (Item item in Items)
-            {
-                if(item.Name == "Clef")
-                {
-                    item.AlternateDrawInContainer(inventoryConsole, Game.GetProportionnalHorizontalSize(25), j);
-                    j++;
-                }
-            }
-
-            inventoryConsole.Print(Game.GetProportionnalHorizontalSize(48), Game.GetProportionnalHorizontalSize(3), "Potions", Colors.Text);
-            CellSelection.CreateRoomWalls(50, 5, 3, 3, 186, 205, 201, 187, 200, 188, inventoryConsole);
-
+            Draw(inventoryConsole);
             if(Potions.Count() > 0)
             {
-                Potion potion = Potions[Selection.AlternateSelectedItemIndex] as Potion;
-                potion.AlternateDrawInContainer(inventoryConsole, 51, 6);
+                Potion potion = Potions[Selection.SelectedItemIndex] as Potion;
+                potion.Draw(inventoryConsole, 48, 6);
                 if(potion.EffectCode == 2)
                 {
                     CellSelection.HighlightMonstersAround(Game.Player.Coord, 5, mapConsole);
@@ -61,22 +48,19 @@ namespace Projet.Systems
 
         public void Draw(RLConsole console)
         {
-            int width = console.Width - 4;
-            int height = console.Height - 5;
-            int columnWidth = (width * height) / (2 * Capacity);
-            int i = 2;
-            int j = 4;
+            console.Print(Game.GetProportionnalSizeInContainer(25, console.Width), 3, "Clefs", Colors.Text);
+            int j = 5;
             foreach (Item item in Items)
             {
-                int offset = columnWidth / 2 - 2;
-                item.DrawInContainer(console, i + offset, j);
-                i += columnWidth;
-                if(i+columnWidth >= width)
+                if (item.Name == "Clef")
                 {
-                    i = 2;
-                    j+=2;
+                    item.Draw(console, Game.GetProportionnalSizeInContainer(25, console.Width), j);
+                    j ++;
                 }
             }
+
+            console.Print(45, 3, "Potions", Colors.Text);
+            CellSelection.CreateRoomWalls(47, 5, 3, 3, 186, 205, 201, 187, 200, 188, console);
         }
 
         public bool PickUp(Item item)
@@ -92,10 +76,14 @@ namespace Projet.Systems
                 if (Items.Count() < Capacity)
                 {
                     Items.Add(item);
-                    item.Dropped = false;
+                    if (item.Name == "Clef")
+                    {
+                        Game.Map.UpdateExitState();
+                    }
                     return true;
                 }
             }
+
             return false;
         }
 
@@ -155,7 +143,7 @@ namespace Projet.Systems
 
         public bool UsePotion()
         {
-            int index = Selection.AlternateSelectedItemIndex;
+            int index = Selection.SelectedItemIndex;
             if (index < Potions.Count())
             {
                 Item item = Potions[index];
@@ -165,9 +153,9 @@ namespace Projet.Systems
                     if (item.Quantity == 0)
                     {
                         Items.Remove(item);
-                        if (--Selection.AlternateSelectedItemIndex < 0)
+                        if (--Selection.SelectedItemIndex < 0)
                         {
-                            Selection.AlternateSelectedItemIndex = 0;
+                            Selection.SelectedItemIndex = 0;
                         }
                     }
                     return true;
@@ -178,30 +166,48 @@ namespace Projet.Systems
 
         public bool NextSelection()
         {
-            int temp = Selection.AlternateSelectedItemIndex;
-            if (++Selection.AlternateSelectedItemIndex >= Potions.Count())
+            int temp = Selection.SelectedItemIndex;
+            if (++Selection.SelectedItemIndex >= Potions.Count())
             {
-                Selection.AlternateSelectedItemIndex = 0;
+                Selection.SelectedItemIndex = 0;
             }
-            return temp != Selection.AlternateSelectedItemIndex;
+            return temp != Selection.SelectedItemIndex;
+        }
+
+        public bool PreviousSelection()
+        {
+            int temp = Selection.SelectedItemIndex;
+            if (--Selection.SelectedItemIndex < 0)
+            {
+                Selection.SelectedItemIndex = Potions.Count - 1;
+            }
+            return temp != Selection.SelectedItemIndex;
         }
 
         public bool HasKeys()
         {
-            Item[] keys = new Item[3];
             for (int j = 0; j < 3; j++)
             {
-                keys[j] = Items.Find(i => i.Name == "Key" && i.EffectCode == j);
-                if (keys[j] == null)
+                Item key = Items.Find(i => i.Name == "Clef" && i.EffectCode == j);
+                if (key == null)
                 {
                     return false;
                 }
             }
-            foreach (Item key in keys)
-            {
-                Items.Remove(key);
-            }
             return true;
+        }
+        
+        public bool UseKeys()
+        {
+            if (HasKeys())
+            {
+                foreach (Item key in Items.Where(i => i.Name == "Clef"))
+                {
+                    Items.Remove(key);
+                }
+                return true;
+            }
+            return false;
         }
     }
 }

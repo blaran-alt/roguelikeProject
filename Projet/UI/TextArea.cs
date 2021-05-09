@@ -15,6 +15,8 @@ namespace Projet.UI
         private Button submitButton;
         public bool EnterPressed;
         public string Value { get; set; }
+        public event EventHandler<MenuEventArgs> OnSubmit;
+        public MenuEventArgs menuArgs;
 
         public TextArea(string defaultValue, Point topLeftCorner, Point bottomRightCorner, RLColor submitColor, RLColor submitHoverColor) : base(defaultValue, topLeftCorner, bottomRightCorner, RLColor.White, RLColor.Gray)
         {
@@ -26,9 +28,23 @@ namespace Projet.UI
                 _bottomRightCorner.Y = topLeftCorner.Y + 3;
             }
             submitButton = new Button("Valider", TopLeftCorner + new Point((int)Math.Floor(Width * .7), 0), BottomRightCorner, submitColor, submitHoverColor);
-            submitButton.OnClick += OnSubmit;
+            submitButton.OnClick += Submitted;
             OnClick += Game.TakeInput;
         }
+        public TextArea(string defaultValue, Point topLeftCorner, Point bottomRightCorner, RLColor submitColor, RLColor submitHoverColor, RLColor submitDisabledColor) : base(defaultValue, topLeftCorner, bottomRightCorner, RLColor.White, RLColor.Gray)
+        {
+            EnterPressed = false;
+            DefaultValue = defaultValue;
+            Value = defaultValue;
+            if (Height < 3)
+            {
+                _bottomRightCorner.Y = topLeftCorner.Y + 3;
+            }
+            submitButton = new Button("Valider", TopLeftCorner + new Point((int)Math.Floor(Width * .7), 0), BottomRightCorner, submitColor, submitHoverColor, submitDisabledColor);
+            submitButton.OnClick += Submitted;
+            OnClick += Game.TakeInput;
+        }
+
 
         public override void Draw(RLConsole console, bool isHovered)
         {
@@ -38,34 +54,26 @@ namespace Projet.UI
             {
                 color = _hoverColor;
             }
+            else if (IsDisabled)
+            {
+                color = RLColor.Gray;
+            }
             else
             {
                 color = _color;
             }
             console.SetBackColor(TopLeftCorner.X, TopLeftCorner.Y, (int)Math.Floor(Width * .7), Height, color);
-            string value;
-            if (Value == null)
-            {
-                value = _symbol.ToString();
-            }
-            else
-            {
-                value = Value;
-            }
-            console.Print(TopLeftCorner.X + Game.GetCenterOffset((int)Math.Floor(Width * .7), value.Length), TopLeftCorner.Y + Game.GetEvenlySpacedOffset(Height, 1), value, Colors.Text);
+            console.Print(TopLeftCorner.X + Game.GetCenterOffset((int)Math.Floor(Width * .7), Value.Length), TopLeftCorner.Y + Game.GetEvenlySpacedOffset(Height, 1), Value, Colors.Text);
         }
 
         public override void Click()
         {
             if (Menu.StaticIsOverButton(submitButton) || EnterPressed)
             {
-                if (Value == DefaultValue)
+                if (Value != DefaultValue && !IsDisabled)
                 {
-                    Game.MessageLog.Add("Vous devez rentrez un champ");
-                }
-                else
-                {
-                    Game.StartWithSeed(int.Parse(Value));
+                    menuArgs = new MenuEventArgs(Value);
+                    OnSubmit?.Invoke(this, menuArgs);
                 }
                 EnterPressed = false;
             }
@@ -75,9 +83,12 @@ namespace Projet.UI
             }
         }
 
-        private void OnSubmit(Object sender, EventArgs args)
+        private void Submitted(Object sender, EventArgs args)
         {
-            Click();
+            if (!IsDisabled)
+            {
+                Click();
+            }
         }
     }
 }

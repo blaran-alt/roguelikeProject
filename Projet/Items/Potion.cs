@@ -16,11 +16,10 @@ namespace Projet.Items
         private readonly string[] _effects = new string[] { "Sante", "Vitesse", "Degats" };
 
         private readonly RLColor[] colors = new RLColor[] {Colors.ComplimentLightest, Colors.AlternateDarkest, Colors.ComplimentDarkest};
-        public Potion(bool dropped, int x, int y, int effectCode)
+        public Potion(int x, int y, int effectCode)
         {
             Name = "Potion";
             Quantity = 1;
-            Dropped = dropped;
             X = x;
             Y = y;
             EffectCode = effectCode;
@@ -28,8 +27,6 @@ namespace Projet.Items
             Symbols = new int[] { '^' };
             _effect = _effects[effectCode];
         }
-        public Potion(int effectCode, int x, int y ) : this (true, x, y, effectCode) { }
-        public Potion(int effectCode) : this(false, 0, 0, effectCode) { }
 
         public override bool Use()
         {
@@ -43,7 +40,7 @@ namespace Projet.Items
             }
             else if(EffectCode == 1)
             {
-                player.Speed = 5;
+                player.AffectSpeed(5, 7);
                 Game.MessageLog.Add($"{player.Name} a utilise une potion de vitesse et double sa vitesse pour 5 tours");
                 return true;
             }
@@ -68,10 +65,8 @@ namespace Projet.Items
             return false;
         }
 
-        public override void AlternateDrawInContainer(RLConsole console, int x, int y)
+        public override void Draw(RLConsole console, int x, int y)
         {
-            x = Game.GetProportionnalHorizontalSize(x);
-            y = Game.GetProportionnalHorizontalSize(y);
             console.Set(x, y, Color, null, Symbols[0]);
             console.Print(x + 3, y, _effect, Colors.Text, Colors.ComplimentDarkest);
             console.Print(x + 2, y + 1, Quantity.ToString(), Colors.Text, Colors.ComplimentDarkest);

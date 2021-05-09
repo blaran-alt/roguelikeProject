@@ -56,7 +56,7 @@ namespace Projet.Core
             {
                 console.Set(X, Y, Color, Colors.FloorBackgroundFov, Symbols[0]);
             }
-            else if(Game.Map.LightsOn)
+            else if(Game.Map.ObstacleFree)
             {
                 // When not in field-of-view just draw a normal floor
                 console.Set(X, Y, Colors.Floor, Colors.FloorBackground, '.');
