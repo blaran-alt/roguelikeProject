@@ -385,7 +385,11 @@ namespace Projet
                         {
                             if (Map.CanMoveDownToNextLevel())
                             {
-                                _mapLevel++;
+                                if(++_mapLevel == 3)
+                                {
+                                    _rootConsole.LoadBitmap("ExtendTestBisInverted.png", 16, 16);
+                                    Inventory.UseKeys();
+                                }
                                 Thread thread = new Thread(LoadNextLevel);
                                 thread.Start();
 
@@ -492,7 +496,6 @@ namespace Projet
                 case 2:
                     return new NeuronMapGenerator(_mapWidth, _mapHeight, 30, 15, 5);
                 case 3:
-                    _rootConsole.LoadBitmap("ExtendTestBisInverted.png", 16, 16);
                     return new InvertedMapGenerator(_mapWidth, _mapHeight);
                 default:
                     return null;

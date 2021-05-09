@@ -39,7 +39,7 @@ namespace Projet.Behaviors
 
                 int deltaX = player.X - monster.X;
                 int deltaY = player.Y - monster.Y;
-                if (Math.Abs(deltaX) == 1 && Math.Abs(deltaY)  == 1)
+                if (Math.Abs(deltaX) == 1 || Math.Abs(deltaY)  == 1)
                 {
                     commandSystem.MoveMonster(monster, map.GetCell(monster.X - deltaX, monster.Y - deltaY));
                     return true;
